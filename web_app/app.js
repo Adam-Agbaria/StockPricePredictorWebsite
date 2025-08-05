@@ -334,7 +334,7 @@ class StockPredictor {
         if (!this.chart || this.historicalPredictions.length === 0) return;
         
         // Take every 3rd point for cleaner visualization
-        const step = Math.max(1, Math.floor(this.historicalPredictions.length / 45));
+        const step = Math.max(1, Math.floor(this.historicalPredictions.length / 25));
         const chartData = this.historicalPredictions.filter((_, index) => index % step === 0);
         
         // Prepare data for the chart
