@@ -110,7 +110,7 @@ class RealtimePredictor {
         // Get configuration
         this.apiKey = document.getElementById('apiKey').value.trim();
         this.symbol = 'QQQ'; // Using QQQ with scaling for NQ futures tracking
-        this.interval = document.getElementById('interval').value;
+        this.interval = '1min'; // Fixed to 1-minute intervals only
         
         if (!this.apiKey) {
             alert('Please enter your Twelve Data API key');
@@ -136,9 +136,7 @@ class RealtimePredictor {
             document.getElementById('connectBtn').disabled = true;
             document.getElementById('stopBtn').disabled = false;
             
-            const intervalText = this.interval === '5min' && this.predictionSteps === 1 ? 
-                '5min data, 5min predictions' : 
-                `${this.interval} data, ${this.predictionSteps}min predictions`;
+                    const intervalText = `1min data, ${this.predictionSteps}min predictions`;
                 
             const statusMsg = `Connected to NQ Futures via ${this.symbol} (${intervalText}) - 800 req/day FREE!`;
             this.updateStatus('ready', statusMsg);
@@ -269,15 +267,8 @@ class RealtimePredictor {
         if (!data.values || !Array.isArray(data.values) || data.values.length === 0) {
             console.error('❌ No time series data found. Full API response:', data);
             
-            // Try fallback to 5-minute data if 1-minute fails
-            if (this.interval === '1min') {
-                console.log('🔄 1-minute data failed, trying 5-minute as fallback...');
-                this.interval = '5min';
-                this.predictionSteps = 1; // Adjust prediction to 1 step for 5min data
-                this.updateStatus('connecting', 'Switching to 5-minute data...');
-                console.log('ℹ️ Note: Using 5-minute data with 1-step prediction instead of 5-step');
-                return this.fetchMarketData(); // Retry with 5min
-            }
+            // Rate limited with 1min interval - no fallback since we only support 1min
+            console.log('⚠️ Rate limited with 1min interval - please wait before retrying...');
             
             throw new Error('No market data available from Twelve Data. Markets might be closed or symbol invalid.');
         }
@@ -851,8 +842,8 @@ class RealtimePredictor {
     updateChart(marketData, prediction) {
         if (!this.chart) return;
         
-        // Get recent data for chart (last 30 candles for better context)
-        const recentData = marketData.slice(-30);
+        // Get recent data for chart (last 25 candles for better context)
+        const recentData = marketData.slice(-25);
         const currentData = marketData[marketData.length - 1];
         
         // Create labels using current local time and working backwards
@@ -898,7 +889,7 @@ class RealtimePredictor {
         const predictionData = new Array(recentData.length + this.predictionSteps).fill(null);
         
         // Fill prediction data with ALL stored predictions
-        const chartStartTime = new Date(currentTime.getTime() - (29 * 60000)); // 29 minutes ago (to match 30 candles)
+        const chartStartTime = new Date(currentTime.getTime() - (24 * 60000)); // 24 minutes ago (to match 25 candles)
         const chartEndTime = new Date(currentTime.getTime() + (this.predictionSteps * 60000)); // 5 minutes ahead
         
         console.log(`📊 Chart time range: ${chartStartTime.toLocaleTimeString()} to ${chartEndTime.toLocaleTimeString()}`);
