@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1400, initial-scale=0.3, minimum-scale=0.1, maximum-scale=2.0, user-scalable=yes">
+    <title>Live Analysis - LSTM Stock Predictor</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0/dist/tf.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="nav-brand">
+                <a href="index.html">
+                    <div class="logo">
+                        <div class="logo-icon"></div>
+                        <span>LSTM Stock Predictor</span>
+                    </div>
+                </a>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Dashboard</a>
+                <a href="predictor.html" class="nav-link active">Historical Analysis</a>
+                <a href="realtime.html" class="nav-link">Real-Time</a>
+                <a href="#" class="nav-link">Documentation</a>
+            </div>
+        </nav>
+
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1>LSTM Neural Network Analysis</h1>
+                <p>Real-Time Stock Price Prediction on Recent Market Data</p>
+            </div>
+            
+            <!-- Model Status -->
+            <div class="model-status" id="modelStatus">
+                <div class="status-indicator">
+                    <div class="status-dot loading"></div>
+                    <span class="status-text">Initializing neural network...</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Statistics Section -->
+            <div class="stats-section">
+                <h2>Model Performance Metrics</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 19c-5 0-8-3-8-8s3-8 8-8 8 3 8 8-3 8-8 8z"></path>
+                            </svg>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="totalPredictions">--</div>
+                            <div class="stat-label">Total Predictions</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="22,12 18,12 15,21 9,3 6,12 2,12"></polyline>
+                            </svg>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="avgAccuracy">--</div>
+                            <div class="stat-label">Average Accuracy</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
+                                <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                                <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                            </svg>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="mae">--</div>
+                            <div class="stat-label">Mean Absolute Error</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3"></path>
+                            </svg>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value" id="rmse">--</div>
+                            <div class="stat-label">Root Mean Square Error</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="button-group">
+                    <button id="refreshBtn" class="btn btn-primary">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="23,4 23,10 17,10"></polyline>
+                            <polyline points="1,20 1,14 7,14"></polyline>
+                            <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path>
+                        </svg>
+                        <span>Refresh Analysis</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Chart Section -->
+            <div class="chart-section">
+                <div class="chart-header">
+                    <h2>Prediction Analysis</h2>
+                    <div class="chart-controls">
+                        <div class="legend">
+                            <div class="legend-item">
+                                <div class="legend-color actual"></div>
+                                <span>Actual Prices</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-color predicted"></div>
+                                <span>Predicted Prices</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="predictionChart"></canvas>
+                </div>
+                <div class="chart-footer">
+                    <p>Historical Analysis: Actual vs Predicted Prices</p>
+                </div>
+            </div>
+
+            <!-- Analysis Section -->
+            <div class="analysis-section">
+                <h2>Technical Analysis</h2>
+                <div class="insights-grid">
+                    <div class="insight-card">
+                        <div class="insight-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 19c-5 0-8-3-8-8s3-8 8-8 8 3 8 8-3 8-8 8z"></path>
+                                <path d="M9 9h6l-2-2m2 2l-2 2"></path>
+                            </svg>
+                        </div>
+                        <div class="insight-content">
+                            <h3>LSTM Architecture</h3>
+                            <p>64-unit LSTM layer with dropout regularization, trained on sequential market data with 20 time-step lookback window.</p>
+                        </div>
+                    </div>
+                    <div class="insight-card">
+                        <div class="insight-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 3v18h18"></path>
+                                <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"></path>
+                            </svg>
+                        </div>
+                        <div class="insight-content">
+                            <h3>Market Data Integration</h3>
+                            <p>Real-time analysis using recent market data (~$18,700 range) with technical indicators and volume patterns.</p>
+                        </div>
+                    </div>
+                    <div class="insight-card">
+                        <div class="insight-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+                            </svg>
+                        </div>
+                        <div class="insight-content">
+                            <h3>Prediction Horizon</h3>
+                            <p>5-step ahead forecasting with MinMaxScaler normalization for optimal neural network performance.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Neural Network</h4>
+                    <p>TensorFlow.js • 64-unit LSTM • Real-time inference</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Data Processing</h4>
+                    <p>MinMaxScaler • Feature Engineering • Time Series</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Performance</h4>
+                    <p>Browser-based • Zero latency • High accuracy</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="app.js?v=20250803"></script>
+</body>
+</html>

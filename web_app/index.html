@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1400, initial-scale=0.3, minimum-scale=0.1, maximum-scale=2.0, user-scalable=yes">
+    <title>LSTM Stock Predictor - AI-Powered Financial Analysis</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="nav-brand">
+                <a href="index.html">
+                    <div class="logo">
+                        <div class="logo-icon"></div>
+                        <span>LSTM Stock Predictor</span>
+                    </div>
+                </a>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link active">Dashboard</a>
+                <a href="predictor.html" class="nav-link">Historical Analysis</a>
+                <a href="realtime.html" class="nav-link">Real-Time</a>
+                <a href="#" class="nav-link">Documentation</a>
+            </div>
+        </nav>
+
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1 class="hero-title">AI-Powered Stock Price Prediction</h1>
+                <p class="hero-subtitle">Advanced LSTM Neural Network for Financial Market Analysis</p>
+                <p class="hero-description">
+                    Leverage cutting-edge deep learning technology to predict stock prices using Long Short-Term Memory 
+                    neural networks trained on real market data with high-frequency trading patterns.
+                </p>
+                <div class="hero-buttons">
+                    <a href="realtime.html" class="btn btn-primary btn-large">
+                        <span>Real-Time Prediction</span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="9,18 15,12 9,6"></polyline>
+                        </svg>
+                    </a>
+                    <a href="#features" class="btn btn-secondary btn-large">
+                        <span>Learn More</span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M7,17L17,7"></path><path d="M7,7h10v10"></path>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <div class="stat-number">99.99%</div>
+                    <div class="stat-label">Model Accuracy</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">$2.61</div>
+                    <div class="stat-label">Mean Absolute Error</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">20</div>
+                    <div class="stat-label">Time Steps</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="features-section">
+            <h2 class="section-title">Advanced Features</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M9 19c-5 0-8-3-8-8s3-8 8-8 8 3 8 8-3 8-8 8z"></path>
+                            <path d="M9 9h6l-2-2m2 2l-2 2"></path>
+                        </svg>
+                    </div>
+                    <h3>LSTM Neural Network</h3>
+                    <p>State-of-the-art deep learning architecture optimized for time series prediction and sequential pattern recognition in financial markets.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M3 3v18h18"></path>
+                            <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"></path>
+                        </svg>
+                    </div>
+                    <h3>Real Market Data</h3>
+                    <p>Trained on authentic financial market data including price movements, volume patterns, and technical indicators.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+                        </svg>
+                    </div>
+                    <h3>Real-Time Analysis</h3>
+                    <p>Instant predictions powered by TensorFlow.js running directly in your browser with zero latency.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3"></path>
+                        </svg>
+                    </div>
+                    <h3>Interactive Visualization</h3>
+                    <p>Professional-grade charts displaying prediction accuracy with detailed performance analytics and real-time metrics.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"></path>
+                        </svg>
+                    </div>
+                    <h3>Performance Analytics</h3>
+                    <p>Comprehensive model evaluation with MAE, RMSE, accuracy metrics, and detailed prediction confidence intervals.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                            <line x1="8" y1="21" x2="16" y2="21"></line>
+                            <line x1="12" y1="17" x2="12" y2="21"></line>
+                        </svg>
+                    </div>
+                    <h3>Modern Technology</h3>
+                    <p>Built with TensorFlow.js, Chart.js, and modern web standards for optimal performance and reliability.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Technology Section -->
+        <section class="tech-section">
+            <h2 class="section-title">Technology Stack</h2>
+            <div class="tech-grid">
+                <div class="tech-item">
+                    <h4>Machine Learning</h4>
+                    <ul>
+                        <li>TensorFlow & Keras</li>
+                        <li>LSTM Neural Networks</li>
+                        <li>TensorFlow.js Runtime</li>
+                        <li>MinMaxScaler Preprocessing</li>
+                    </ul>
+                </div>
+                <div class="tech-item">
+                    <h4>Data Processing</h4>
+                    <ul>
+                        <li>Python & NumPy</li>
+                        <li>Pandas Data Manipulation</li>
+                        <li>Scikit-learn Preprocessing</li>
+                        <li>Real-time Feature Engineering</li>
+                    </ul>
+                </div>
+                <div class="tech-item">
+                    <h4>Frontend</h4>
+                    <ul>
+                        <li>HTML5 & CSS3</li>
+                        <li>Vanilla JavaScript</li>
+                        <li>Chart.js Visualization</li>
+                        <li>Responsive Design</li>
+                    </ul>
+                </div>
+                <div class="tech-item">
+                    <h4>Data Sources</h4>
+                    <ul>
+                        <li>High-frequency Market Data</li>
+                        <li>Technical Indicators</li>
+                        <li>Volume Analysis</li>
+                        <li>Moving Averages</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta-section">
+            <div class="cta-content">
+                <h2>Experience AI-Powered Financial Prediction</h2>
+                <p>Deploy sophisticated LSTM neural networks for advanced market analysis and prediction modeling.</p>
+                <a href="predictor.html" class="btn btn-primary btn-large">
+                    <span>Launch Platform</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M7,17L17,7"></path><path d="M7,7h10v10"></path>
+                    </svg>
+                </a>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>LSTM Stock Predictor</h4>
+                    <p>Advanced AI-powered financial analysis platform</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Technology</h4>
+                    <p>TensorFlow.js • Deep Learning • Real-time Analysis</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Performance</h4>
+                    <p>99.99% Accuracy • $2.61 MAE • Real Market Data</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

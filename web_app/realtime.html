@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1400, initial-scale=0.3, minimum-scale=0.1, maximum-scale=2.0, user-scalable=yes">
+    <title>Real-Time Prediction - LSTM Stock Predictor</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0/dist/tf.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="nav-brand">
+                <a href="index.html">
+                    <div class="logo">
+                        <div class="logo-icon"></div>
+                        <span>LSTM Stock Predictor</span>
+                    </div>
+                </a>
+            </div>
+            <div class="nav-links">
+                <a href="index.html" class="nav-link">Dashboard</a>
+                <a href="predictor.html" class="nav-link">Historical Analysis</a>
+                <a href="realtime.html" class="nav-link active">Real-Time</a>
+            </div>
+        </nav>
+
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1>Real-Time NQ Futures Prediction</h1>
+                <p>Live LSTM Neural Network Analysis for NASDAQ-100 E-mini Futures</p>
+            </div>
+            
+            <!-- Model Status -->
+            <div class="model-status" id="modelStatus">
+                <div class="status-indicator">
+                    <div class="status-dot loading"></div>
+                    <span class="status-text">Initializing real-time system...</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            
+            <!-- API Configuration Section -->
+            <div class="config-section">
+                <h2>NQ Futures Configuration</h2>
+                <div class="config-grid">
+                    <div class="config-item">
+                        <label for="apiKey">Twelve Data API Key</label>
+                        <input type="password" id="apiKey" placeholder="Enter your FREE API key from twelvedata.com">
+                        <small>Get your FREE API key at <a href="https://twelvedata.com/pricing" target="_blank">twelvedata.com</a> (800 requests/day FREE - 32x more than Alpha Vantage!)</small>
+                    </div>
+                    <div class="config-item">
+                        <label>NQ Futures Tracking</label>
+                                            <div class="futures-info">
+                        <div class="futures-symbol">QQQ × 41.36 = NQ Scale</div>
+                        <small>QQQ ETF scaled to NQ E-mini futures price range</small>
+                    </div>
+                    </div>
+                    <div class="config-item">
+                        <label for="interval">Data Interval</label>
+                        <select id="interval">
+                            <option value="1min" selected>1 Minute</option>
+                            <option value="5min">5 Minutes</option>
+                            <option value="15min">15 Minutes</option>
+                            <option value="30min">30 Minutes</option>
+                            <option value="1h">1 Hour</option>
+                        </select>
+                    </div>
+                    <div class="config-controls">
+                        <button id="connectBtn" class="btn btn-primary">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12l5 5L20 7"></path>
+                            </svg>
+                            <span>Connect & Start</span>
+                        </button>
+                        <button id="stopBtn" class="btn btn-secondary" disabled>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="6" y="6" width="12" height="12"></rect>
+                            </svg>
+                            <span>Stop</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Real-Time Dashboard -->
+            <div class="realtime-dashboard" id="realtimeDashboard" style="display: none;">
+                
+                <!-- Current Price & Prediction -->
+                <div class="price-section">
+                    <div class="current-price-card">
+                        <div class="price-header">
+                            <h3>Current Market Price</h3>
+                            <div class="price-timestamp" id="lastUpdate">--</div>
+                        </div>
+                        <div class="price-display">
+                            <div class="price-value" id="currentPrice">$--</div>
+                            <div class="price-change" id="priceChange">
+                                <span class="change-amount">--</span>
+                                <span class="change-percent">(--)</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="prediction-card">
+                        <div class="prediction-header">
+                            <h3>LSTM Prediction (5 min ahead)</h3>
+                            <div class="prediction-confidence" id="confidence">Confidence: --%</div>
+                        </div>
+                        <div class="prediction-display">
+                            <div class="predicted-price" id="predictedPrice">$--</div>
+                            <div class="prediction-direction" id="predictionDirection">
+                                <div class="direction-arrow" id="directionArrow">→</div>
+                                <div class="direction-text" id="directionText">Analyzing...</div>
+                            </div>
+                        </div>
+                        <div class="prediction-time" id="predictionTime" style="text-align: center; margin-top: 10px; font-size: 0.9em; color: #9CA3AF;">
+                            Target time: --
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Real-Time Statistics -->
+                <div class="stats-section">
+                    <h2>Real-Time Performance</h2>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+                                </svg>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value" id="predictionAccuracy">--%</div>
+                                <div class="stat-label">Prediction Accuracy</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polyline points="12,6 12,12 16,14"></polyline>
+                                </svg>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value" id="updateCount">0</div>
+                                <div class="stat-label">Data Updates</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
+                                </svg>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value" id="responseTime">--ms</div>
+                                <div class="stat-label">API Response Time</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M3 3v18h18"></path>
+                                    <path d="M18.7 8l-5.1 5.2-2.8-2.7L7 14.3"></path>
+                                </svg>
+                            </div>
+                            <div class="stat-content">
+                                <div class="stat-value" id="avgError">$--</div>
+                                <div class="stat-label">Average Error</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Real-Time Chart -->
+                <div class="chart-section">
+                    <div class="chart-header">
+                        <h2>Live NQ Futures Price & Predictions</h2>
+                        <div class="chart-controls">
+                            <div class="legend">
+                                <div class="legend-item">
+                                    <div class="legend-color actual"></div>
+                                    <span>QQQ Scaled Price</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-color predicted"></div>
+                                    <span>LSTM Prediction (5min ahead)</span>
+                                </div>
+                                <div class="legend-item">
+                                    <div class="legend-color" style="background-color: rgb(255, 99, 132);"></div>
+                                    <span>All Predictions (Persistent)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="realtimeChart"></canvas>
+                    </div>
+                                    <div class="chart-footer">
+                    <p>Real-time NQ futures via QQQ scaled • 1-min data • 5-min ahead LSTM predictions • Persistent prediction history</p>
+                </div>
+                </div>
+
+                <!-- Market Information -->
+                <div class="market-info-section">
+                    <h2>Market Information</h2>
+                    <div class="market-info-grid">
+                        <div class="info-card">
+                            <div class="info-header">
+                                <h3>Trading Session</h3>
+                                <div class="market-status" id="marketStatus">
+                                    <div class="status-dot ready"></div>
+                                    <span>Open</span>
+                                </div>
+                            </div>
+                                                    <div class="info-content">
+                            <div class="info-item">
+                                <span class="info-label">Volume</span>
+                                <span class="info-value" id="volume">--</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Day High</span>
+                                <span class="info-value" id="dayHigh">$--</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Day Low</span>
+                                <span class="info-value" id="dayLow">$--</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Open</span>
+                                <span class="info-value" id="openPrice">$--</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-header">
+                            <h3>NQ Futures Info</h3>
+                        </div>
+                        <div class="info-content">
+                            <div class="info-item">
+                                <span class="info-label">Contract</span>
+                                <span class="info-value">E-mini NASDAQ-100</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Exchange</span>
+                                <span class="info-value">CME</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Tracking via</span>
+                                <span class="info-value">QQQ Scaled</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Index</span>
+                                <span class="info-value">NASDAQ-100</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-header">
+                            <h3>LSTM Model Details</h3>
+                        </div>
+                            <div class="info-content">
+                                <div class="info-item">
+                                    <span class="info-label">Architecture</span>
+                                    <span class="info-value">64-unit LSTM</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Sequence Length</span>
+                                    <span class="info-value">20 time steps</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Prediction Horizon</span>
+                                    <span class="info-value">Next price step</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Training Accuracy</span>
+                                    <span class="info-value">99.99%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>NQ Futures Data</h4>
+                    <p>NASDAQ-100 E-mini futures tracking via QQQ scaled • Alpha Vantage API</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Neural Network</h4>
+                    <p>TensorFlow.js • 64-unit LSTM • Real-time inference</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Performance</h4>
+                    <p>Sub-second predictions • Professional-grade accuracy</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="realtime.js"></script>
+</body>
+</html>

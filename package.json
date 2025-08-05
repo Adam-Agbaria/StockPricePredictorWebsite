@@ -1,0 +1,24 @@
+{
+  "name": "lstm-stock-predictor",
+  "version": "1.0.0",
+  "description": "AI-Powered Real-Time Stock Price Prediction using LSTM Neural Networks",
+  "main": "web_app/index.html",
+  "scripts": {
+    "start": "python start_webapp.py",
+    "dev": "python start_webapp.py",
+    "build": "echo 'Static site - no build step required'"
+  },
+  "keywords": [
+    "lstm",
+    "stock-prediction",
+    "tensorflow",
+    "machine-learning",
+    "real-time",
+    "financial-analysis"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

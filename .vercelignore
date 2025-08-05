@@ -1,0 +1,29 @@
+# Python files and training data
+*.py
+*.pyc
+__pycache__/
+data/
+model_checkpoints/
+
+# Development files
+*.backup
+.git/
+.gitignore
+
+# Documentation (optional - remove if you want docs deployed)
+README.md
+REALTIME_SETUP.md
+
+# Large files not needed for web app
+*.csv
+*.h5
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
