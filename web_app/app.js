@@ -333,11 +333,9 @@ class StockPredictor {
     updateChart() {
         if (!this.chart || this.historicalPredictions.length === 0) return;
         
-        // Remove last 5 points, then take up to 50 points before those
-        const total = this.historicalPredictions.length;
-        const startIndex = Math.max(0, total - 55); // 50 points earlier than the last 5
-        const endIndex = total - 5; // Exclude last 5
-        const chartData = this.historicalPredictions.slice(startIndex, endIndex);
+        // Take every 3rd point for cleaner visualization
+        const step = Math.max(1, Math.floor(this.historicalPredictions.length / 50));
+        const chartData = this.historicalPredictions.filter((_, index) => index % step === 0);
         
         // Prepare data for the chart
         const labels = chartData.map((p, index) => `Point ${index + 1}`);
