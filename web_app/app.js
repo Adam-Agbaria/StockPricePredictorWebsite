@@ -243,7 +243,7 @@ class StockPredictor {
             console.log(`💰 Price range: $${Math.min(...this.sampleData.map(d => d.close))} - $${Math.max(...this.sampleData.map(d => d.close))}`);
             
             // Take a subset of sample data for predictions (last 100 points)
-            const dataSubset = this.sampleData.slice(-100);
+            const dataSubset = this.sampleData.slice(-1000);
             const predictions = [];
             const sequenceLength = 20;
             
@@ -334,7 +334,7 @@ class StockPredictor {
         if (!this.chart || this.historicalPredictions.length === 0) return;
         
         // Take every 3rd point for cleaner visualization
-        const step = Math.max(1, Math.floor(this.historicalPredictions.length / 50));
+        const step = Math.max(1, Math.floor(this.historicalPredictions.length / 45));
         const chartData = this.historicalPredictions.filter((_, index) => index % step === 0);
         
         // Prepare data for the chart

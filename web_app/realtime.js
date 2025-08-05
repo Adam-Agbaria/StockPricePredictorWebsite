@@ -842,8 +842,8 @@ class RealtimePredictor {
     updateChart(marketData, prediction) {
         if (!this.chart) return;
         
-        // Get recent data for chart (last 25 candles for better context)
-        const recentData = marketData.slice(-25);
+        // Get recent data for chart (last 30 candles for better context)
+        const recentData = marketData.slice(-30);
         const currentData = marketData[marketData.length - 1];
         
         // Create labels using current local time and working backwards
@@ -889,7 +889,7 @@ class RealtimePredictor {
         const predictionData = new Array(recentData.length + this.predictionSteps).fill(null);
         
         // Fill prediction data with ALL stored predictions
-        const chartStartTime = new Date(currentTime.getTime() - (24 * 60000)); // 24 minutes ago (to match 25 candles)
+        const chartStartTime = new Date(currentTime.getTime() - (29 * 60000)); // 29 minutes ago (to match 25 candles)
         const chartEndTime = new Date(currentTime.getTime() + (this.predictionSteps * 60000)); // 5 minutes ahead
         
         console.log(`📊 Chart time range: ${chartStartTime.toLocaleTimeString()} to ${chartEndTime.toLocaleTimeString()}`);
