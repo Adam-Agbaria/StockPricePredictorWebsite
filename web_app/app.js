@@ -333,8 +333,8 @@ class StockPredictor {
     updateChart() {
         if (!this.chart || this.historicalPredictions.length === 0) return;
         
-        // Take all points except the last 5 for visualization
-        const chartData = this.historicalPredictions.slice(0, -5);
+        // Take 50 points but cut the last 10 for visualization
+        const chartData = this.historicalPredictions.slice(0, -10).slice(-50);
         
         // Prepare data for the chart
         const labels = chartData.map((p, index) => `Point ${index + 1}`);
