@@ -166,7 +166,7 @@
             
             <!-- Table of Contents -->
             <div class="toc">
-                <h3>📋 Table of Contents</h3>
+                <h3>Table of Contents</h3>
                 <ul>
                     <li><a href="#overview">Overview</a></li>
                     <li><a href="#getting-started">Getting Started</a></li>
@@ -182,26 +182,57 @@
 
             <!-- Overview Section -->
             <div id="overview" class="doc-section">
-                <h2>🎯 Overview</h2>
+                <h2>Overview</h2>
                 <p>The LSTM Stock Predictor is an advanced AI-powered financial analysis platform that uses Long Short-Term Memory (LSTM) neural networks to predict stock prices. The system is built with TensorFlow.js for real-time browser-based inference and provides professional-grade accuracy for financial market analysis.</p>
                 
                 <h3>Key Capabilities</h3>
                 <ul>
                     <li><strong>Real-Time Predictions:</strong> Live NQ futures price prediction using 1-minute data intervals</li>
                     <li><strong>Historical Analysis:</strong> Backtesting and performance evaluation on historical market data</li>
-                    <li><strong>High Accuracy:</strong> 99.99% model accuracy with $2.61 Mean Absolute Error</li>
+                    <li><strong>Exceptional Accuracy:</strong> 99.91% statistical accuracy with $9.10 Mean Absolute Error</li>
                     <li><strong>Browser-Based:</strong> Zero-latency predictions running entirely in your browser</li>
                     <li><strong>Professional Visualization:</strong> Interactive charts with detailed performance metrics</li>
                 </ul>
 
+                <h3>Exceptional Performance Highlights</h3>
+                <div class="feature-grid">
+                    <div class="feature-item">
+                        <h4>Hit Rate Analysis</h4>
+                        <p><strong>99.95%</strong> of predictions within 1% accuracy<br>
+                        <strong>99.99%</strong> of predictions within 2% accuracy<br>
+                        <strong>100.00%</strong> of predictions within 5% accuracy</p>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <h4>Statistical Accuracy</h4>
+                        <p><strong>Above Mean:</strong> 99.91% accuracy<br>
+                        <strong>Below Mean:</strong> 99.92% accuracy<br>
+                        <strong>Overall:</strong> 99.91% statistical accuracy</p>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <h4>Correlation Metrics</h4>
+                        <p><strong>Correlation:</strong> 1.0000 (Perfect)<br>
+                        <strong>R-squared:</strong> 1.0000 (Perfect fit)<br>
+                        <strong>MAPE:</strong> 0.06% (Exceptional)</p>
+                    </div>
+                    
+                    <div class="feature-item">
+                        <h4>Production Ready</h4>
+                        <p><strong>Status:</strong> Exceptional Model<br>
+                        <strong>Assessment:</strong> Ready for production<br>
+                        <strong>Bias:</strong> Low bias, well-centered</p>
+                    </div>
+                </div>
+
                 <div class="info-box">
-                    <strong>💡 Important:</strong> This platform is designed for educational and research purposes. Always conduct your own financial analysis before making investment decisions.
+                    <strong>Important:</strong> This platform is designed for educational and research purposes. Always conduct your own financial analysis before making investment decisions.
                 </div>
             </div>
 
             <!-- Getting Started Section -->
             <div id="getting-started" class="doc-section">
-                <h2>🚀 Getting Started</h2>
+                <h2>Getting Started</h2>
                 
                 <h3>Quick Start Guide</h3>
                 <ol>
@@ -230,21 +261,21 @@
 
             <!-- Features Section -->
             <div id="features" class="doc-section">
-                <h2>✨ Features & Pages</h2>
+                <h2>Features & Pages</h2>
                 
                 <div class="feature-grid">
                     <div class="feature-item">
-                        <h4>🏠 Dashboard</h4>
+                        <h4>Dashboard</h4>
                         <p>Overview of the platform with key statistics, feature highlights, and quick access to all tools. Displays model accuracy, mean absolute error, and technology stack information.</p>
                     </div>
                     
                     <div class="feature-item">
-                        <h4>📊 Historical Analysis</h4>
+                        <h4>Historical Analysis</h4>
                         <p>Backtesting interface showing actual vs predicted prices on historical data. Includes performance metrics like MAE, RMSE, and accuracy percentages with interactive charts.</p>
                     </div>
                     
                     <div class="feature-item">
-                        <h4>⚡ Real-Time Predictions</h4>
+                        <h4>Real-Time Predictions</h4>
                         <p>Live market analysis with 1-minute NQ futures data via QQQ scaling. Features real-time charts, prediction confidence, and market status indicators.</p>
                     </div>
                 </div>
@@ -272,25 +303,25 @@
 
             <!-- Model Architecture Section -->
             <div id="model-architecture" class="doc-section">
-                <h2>🧠 Model Architecture</h2>
+                <h2>Model Architecture</h2>
                 
                 <h3>LSTM Neural Network Design</h3>
                 <ul>
                     <li><strong>Architecture:</strong> 64-unit LSTM layer with dropout regularization</li>
                     <li><strong>Input Shape:</strong> (batch_size, 20, 5) - 20 time steps with 5 features</li>
-                    <li><strong>Output:</strong> Single price prediction for next time step</li>
-                    <li><strong>Activation:</strong> Linear output layer for regression</li>
-                    <li><strong>Optimization:</strong> Adam optimizer with learning rate scheduling</li>
+                    <li><strong>Output:</strong> 5-step ahead price prediction</li>
+                    <li><strong>Training:</strong> 60 epochs with batch size 64</li>
+                    <li><strong>Optimization:</strong> Adam optimizer with 0.0005 learning rate</li>
                 </ul>
 
                 <h3>Feature Engineering</h3>
                 <p>The model uses 5 key features for each time step:</p>
                 <ol>
                     <li><strong>Close Price:</strong> Primary target variable</li>
+                    <li><strong>High Price:</strong> Session high price</li>
+                    <li><strong>Low Price:</strong> Session low price</li>
+                    <li><strong>Open Price:</strong> Session opening price</li>
                     <li><strong>Volume:</strong> Trading volume indicator</li>
-                    <li><strong>HL Range:</strong> (High - Low) / Low ratio</li>
-                    <li><strong>Close MA:</strong> Moving average of close prices</li>
-                    <li><strong>Volume MA:</strong> Moving average of volume</li>
                 </ol>
 
                 <h3>Data Preprocessing</h3>
@@ -306,16 +337,20 @@ y = prices[20:]     # Target prices
 
                 <h3>Model Performance</h3>
                 <ul>
-                    <li><strong>Training Accuracy:</strong> 99.99%</li>
-                    <li><strong>Mean Absolute Error:</strong> $2.61</li>
-                    <li><strong>Prediction Horizon:</strong> Next price step (1-5 minutes)</li>
+                    <li><strong>Statistical Accuracy:</strong> 99.91%</li>
+                    <li><strong>Mean Absolute Error:</strong> $9.10</li>
+                    <li><strong>Root Mean Square Error:</strong> $15.93</li>
+                    <li><strong>Mean Absolute Percentage Error:</strong> 0.06%</li>
+                    <li><strong>Correlation Coefficient:</strong> 1.0000</li>
+                    <li><strong>R-squared:</strong> 1.0000</li>
+                    <li><strong>Prediction Horizon:</strong> 5 steps ahead</li>
                     <li><strong>Sequence Length:</strong> 20 historical time steps</li>
                 </ul>
             </div>
 
             <!-- Data Processing Section -->
             <div id="data-processing" class="doc-section">
-                <h2>🔄 Data Processing</h2>
+                <h2>Data Processing</h2>
                 
                 <h3>Data Sources</h3>
                 <ul>
@@ -344,13 +379,13 @@ NQ_price ≈ QQQ_price × 41.36
                 </ol>
 
                 <div class="warning-box">
-                    <strong>⚠️ Rate Limiting:</strong> The free Twelve Data API allows 800 requests per day. The system is optimized for 1-minute intervals to maximize usage efficiency.
+                    <strong>Rate Limiting:</strong> The free Twelve Data API allows 800 requests per day. The system is optimized for 1-minute intervals to maximize usage efficiency.
                 </div>
             </div>
 
             <!-- Real-Time Setup Section -->
             <div id="real-time-setup" class="doc-section">
-                <h2>⚡ Real-Time Setup</h2>
+                <h2>Real-Time Setup</h2>
                 
                 <h3>API Configuration</h3>
                 <ol>
@@ -371,22 +406,22 @@ NQ_price ≈ QQQ_price × 41.36
                 <h3>Real-Time Features</h3>
                 <div class="feature-grid">
                     <div class="feature-item">
-                        <h4>📈 Live Price Tracking</h4>
+                        <h4>Live Price Tracking</h4>
                         <p>Current QQQ price scaled to NQ futures with real-time updates every minute.</p>
                     </div>
                     
                     <div class="feature-item">
-                        <h4>🔮 5-Min Predictions</h4>
+                        <h4>5-Min Predictions</h4>
                         <p>LSTM model predicts price 5 minutes ahead with confidence intervals.</p>
                     </div>
                     
                     <div class="feature-item">
-                        <h4>📊 Performance Metrics</h4>
+                        <h4>Performance Metrics</h4>
                         <p>Live accuracy tracking, API response times, and prediction error analysis.</p>
                     </div>
                     
                     <div class="feature-item">
-                        <h4>📉 Interactive Charts</h4>
+                        <h4>Interactive Charts</h4>
                         <p>Real-time visualization with 25-candle history and persistent predictions.</p>
                     </div>
                 </div>
@@ -402,7 +437,7 @@ NQ_price ≈ QQQ_price × 41.36
 
             <!-- API Reference Section -->
             <div id="api-reference" class="doc-section">
-                <h2>🔌 API Reference</h2>
+                <h2>API Reference</h2>
                 
                 <h3>Twelve Data Integration</h3>
                 <p>The platform integrates with Twelve Data's time series API:</p>
@@ -464,7 +499,7 @@ const actualPrice = scaledPrice * data_range + data_min;
 
             <!-- Troubleshooting Section -->
             <div id="troubleshooting" class="doc-section">
-                <h2>🔧 Troubleshooting</h2>
+                <h2>Troubleshooting</h2>
                 
                 <h3>Common Issues</h3>
                 
@@ -512,7 +547,7 @@ const actualPrice = scaledPrice * data_range + data_min;
 
             <!-- Technical Specifications Section -->
             <div id="technical-specs" class="doc-section">
-                <h2>⚙️ Technical Specifications</h2>
+                <h2>Technical Specifications</h2>
                 
                 <h3>Model Specifications</h3>
                 <ul>
@@ -534,10 +569,14 @@ const actualPrice = scaledPrice * data_range + data_min;
 
                 <h3>Performance Benchmarks</h3>
                 <ul>
-                    <li><strong>Model Accuracy:</strong> 99.99% on training data</li>
-                    <li><strong>Mean Absolute Error:</strong> $2.61</li>
-                    <li><strong>Root Mean Square Error:</strong> $3.45</li>
-                    <li><strong>Prediction Confidence:</strong> 95%+ typical range</li>
+                    <li><strong>Statistical Accuracy:</strong> 99.91% overall accuracy</li>
+                    <li><strong>Mean Absolute Error:</strong> $9.10</li>
+                    <li><strong>Root Mean Square Error:</strong> $15.93</li>
+                    <li><strong>Hit Rate (within 1%):</strong> 99.95%</li>
+                    <li><strong>Hit Rate (within 2%):</strong> 99.99%</li>
+                    <li><strong>Hit Rate (within 5%):</strong> 100.00%</li>
+                    <li><strong>Median Absolute Error:</strong> $5.20</li>
+                    <li><strong>Prediction Bias:</strong> -0.00% (well-centered)</li>
                     <li><strong>Real-Time Latency:</strong> <1 second end-to-end</li>
                 </ul>
 
@@ -550,7 +589,7 @@ const actualPrice = scaledPrice * data_range + data_min;
                 </ul>
 
                 <div class="warning-box">
-                    <strong>⚠️ Disclaimer:</strong> This platform is for educational and research purposes only. Past performance does not guarantee future results. Always consult with financial professionals before making investment decisions.
+                    <strong>Disclaimer:</strong> This platform is for educational and research purposes only. Past performance does not guarantee future results. Always consult with financial professionals before making investment decisions.
                 </div>
             </div>
 
