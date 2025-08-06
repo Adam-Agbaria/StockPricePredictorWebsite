@@ -354,7 +354,7 @@ y = prices[20:]     # Target prices
                 
                 <h3>Data Sources</h3>
                 <ul>
-                    <li><strong>Training Data:</strong> Historical NQ futures data (~18,700 price range)</li>
+                    <li><strong>Training Data:</strong> Historical NQ futures data (2007-2025 prices)</li>
                     <li><strong>Real-Time Data:</strong> QQQ ETF scaled to NQ futures (QQQ × 41.36)</li>
                     <li><strong>API Provider:</strong> Twelve Data (free tier: 800 requests/day)</li>
                     <li><strong>Data Frequency:</strong> 1-minute intervals for real-time analysis</li>
@@ -560,8 +560,7 @@ const actualPrice = scaledPrice * data_range + data_min;
 
                 <h3>Data Specifications</h3>
                 <ul>
-                    <li><strong>Training Dataset:</strong> 1000+ historical data points</li>
-                    <li><strong>Price Range:</strong> $18,600 - $18,800 (typical NQ range)</li>
+                    <li><strong>Training Dataset:</strong> 5.9 Million historical data points</li>
                     <li><strong>Time Resolution:</strong> 1-minute intervals</li>
                     <li><strong>Feature Count:</strong> 5 engineered features per time step</li>
                     <li><strong>Sequence Length:</strong> 20 historical time steps</li>
