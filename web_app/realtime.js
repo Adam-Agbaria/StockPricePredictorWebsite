@@ -50,9 +50,9 @@ class RealtimePredictor {
             await this.loadScalerInfo();
             this.setupEventListeners();
             this.updateStatus('ready', 'Real-time system ready');
-            console.log('✅ Real-time predictor initialized successfully');
+            console.log('Real-time predictor initialized successfully');
         } catch (error) {
-            console.error('❌ Error initializing predictor:', error);
+            console.error('Error initializing predictor:', error);
             this.updateStatus('error', 'Initialization failed');
         }
     }
@@ -64,22 +64,22 @@ class RealtimePredictor {
         try {
             this.model = await tf.loadLayersModel('../tfjs_model/model/model.json');
             this.isModelLoaded = true;
-            console.log('✅ LSTM model loaded successfully');
+            console.log('LSTM model loaded successfully');
         } catch (error) {
-            console.error('❌ Error loading model:', error);
+            console.error('Error loading model:', error);
             throw new Error('Failed to load LSTM model');
         }
     }
     
     async loadScalerInfo() {
-        console.log('📊 Loading scaler information...');
+        console.log('Loading scaler information...');
         
         try {
             const response = await fetch('../tfjs_model/scaler_info.json?v=20250803');
             this.scalerInfo = await response.json();
-            console.log('✅ Scaler info loaded successfully');
+            console.log('Scaler info loaded successfully');
         } catch (error) {
-            console.error('❌ Error loading scaler info:', error);
+            console.error('Error loading scaler info:', error);
             throw new Error('Failed to load scaler information');
         }
     }
@@ -105,7 +105,7 @@ class RealtimePredictor {
     }
     
     async startRealTimeConnection() {
-        console.log('🔗 Starting Twelve Data API connection...');
+        console.log('Starting Twelve Data API connection...');
         
         // Get configuration
         this.apiKey = document.getElementById('apiKey').value.trim();
@@ -140,10 +140,10 @@ class RealtimePredictor {
                 
             const statusMsg = `Connected to NQ Futures via ${this.symbol} (${intervalText}) - 800 req/day FREE!`;
             this.updateStatus('ready', statusMsg);
-            console.log(`✅ Twelve Data connection established: ${intervalText}`);
+            console.log(`Twelve Data connection established: ${intervalText}`);
             
         } catch (error) {
-            console.error('❌ Error starting connection:', error);
+            console.error('Error starting connection:', error);
             this.updateStatus('error', 'Connection failed');
             
             // Provide specific error messages for Twelve Data
@@ -184,7 +184,7 @@ class RealtimePredictor {
         document.getElementById('realtimeDashboard').style.display = 'none';
         
         this.updateStatus('ready', 'Disconnected');
-        console.log('✅ Real-time connection stopped');
+        console.log('Real-time connection stopped');
     }
     
     showDashboard() {
@@ -203,11 +203,11 @@ class RealtimePredictor {
             }
         }, this.updateInterval);
         
-        console.log(`📅 Periodic updates started (every ${this.updateInterval / 1000}s)`);
+        console.log(`Periodic updates started (every ${this.updateInterval / 1000}s)`);
     }
     
     async fetchAndPredict() {
-        console.log('📈 Fetching market data and making prediction...');
+                    console.log('Fetching market data and making prediction...');
         
         try {
             const startTime = Date.now();
@@ -228,10 +228,10 @@ class RealtimePredictor {
             
             this.updateCount++;
             
-            console.log('✅ Update completed successfully');
+            console.log('Update completed successfully');
             
         } catch (error) {
-            console.error('❌ Error in fetch and predict:', error);
+            console.error('Error in fetch and predict:', error);
             this.updateStatus('error', 'Update failed');
         }
     }
@@ -240,24 +240,24 @@ class RealtimePredictor {
         // Using Twelve Data API - 800 requests/day FREE! 🎉
         const url = `https://api.twelvedata.com/time_series?symbol=${this.symbol}&interval=${this.interval}&outputsize=100&apikey=${this.apiKey}`;
         
-        console.log(`🌐 Fetching NQ futures data via ${this.symbol} (${this.interval} interval)...`);
+        console.log(`Fetching NQ futures data via ${this.symbol} (${this.interval} interval)...`);
         console.log(`📡 Twelve Data API URL: ${url}`);
-        console.log('✅ Using Twelve Data API - 800 requests/day FREE! (32x more than Alpha Vantage)');
+        console.log('Using Twelve Data API - 800 requests/day FREE! (32x more than Alpha Vantage)');
         
         const response = await fetch(url);
-        console.log(`📊 Response status: ${response.status} ${response.statusText}`);
+        console.log(`Response status: ${response.status} ${response.statusText}`);
         
         const data = await response.json();
         console.log(`📋 Twelve Data Response:`, data);
         
         // Check for Twelve Data API errors
         if (data.status === 'error') {
-            console.error(`❌ Twelve Data Error:`, data.message);
+            console.error(`Twelve Data Error:`, data.message);
             throw new Error(`Twelve Data API Error: ${data.message}`);
         }
         
         if (data.code && data.code !== 200) {
-            console.error(`❌ Twelve Data Error Code ${data.code}:`, data.message);
+            console.error(`Twelve Data Error Code ${data.code}:`, data.message);
             if (data.code === 429) {
                 throw new Error('API rate limit exceeded. You have used your 800 daily requests. Please wait until tomorrow.');
             }
@@ -265,10 +265,10 @@ class RealtimePredictor {
         }
         
         if (!data.values || !Array.isArray(data.values) || data.values.length === 0) {
-            console.error('❌ No time series data found. Full API response:', data);
+            console.error('No time series data found. Full API response:', data);
             
             // Rate limited with 1min interval - no fallback since we only support 1min
-            console.log('⚠️ Rate limited with 1min interval - please wait before retrying...');
+            console.log('Rate limited with 1min interval - please wait before retrying...');
             
             throw new Error('No market data available from Twelve Data. Markets might be closed or symbol invalid.');
         }
@@ -297,7 +297,7 @@ class RealtimePredictor {
             }
             
             // 🕐 DEBUG: Let's see what we're getting from the API
-            console.log(`📅 Raw datetime from API: "${item.datetime}"`);
+            console.log(`Raw datetime from API: "${item.datetime}"`);
             
             // Create timestamp - let's be more explicit about timezone handling
             let timestamp = new Date(item.datetime);
@@ -312,7 +312,7 @@ class RealtimePredictor {
                 const timePart = parts[1];
                 const localTimeString = `${datePart} ${timePart}`;
                 timestamp = new Date(localTimeString);
-                console.log(`🔄 Adjusted to local time: ${timestamp.toLocaleString()}`);
+                console.log(`Adjusted to local time: ${timestamp.toLocaleString()}`);
             }
             
             return {
@@ -329,14 +329,14 @@ class RealtimePredictor {
         // Store latest data
         this.marketData = dataArray;
         
-        console.log(`📊 Received ${dataArray.length} data points`);
+        console.log(`Received ${dataArray.length} data points`);
         
         if (dataArray.length > 0) {
             const latest = dataArray[dataArray.length - 1];
             const currentTime = new Date();
             console.log(`🕐 Latest data timestamp: ${latest.timestamp.toLocaleString()}`);
             console.log(`🕐 Current local time: ${currentTime.toLocaleString()}`);
-            console.log(`💰 Current price: $${latest.close.toFixed(2)} (scaled from QQQ with ${this.scalingFactor}x factor)`);
+            console.log(`Current price: $${latest.close.toFixed(2)} (scaled from QQQ with ${this.scalingFactor}x factor)`);
             
             // Check if price is out of training range
             if (latest.close > 22317.75) {
@@ -358,7 +358,7 @@ class RealtimePredictor {
             throw new Error('Not enough data for prediction (need at least 40 points for proper moving averages)');
         }
         
-        console.log(`🎯 Making DIRECT ${this.predictionSteps}-step LSTM prediction (matching trained model)...`);
+        console.log(`Making DIRECT ${this.predictionSteps}-step LSTM prediction (matching trained model)...`);
         
         // CRITICAL FIX: Calculate moving averages BEFORE creating sequences, exactly like Python!
         // We need to calculate MA for all points, not just within the sequence
@@ -399,7 +399,7 @@ class RealtimePredictor {
             sequence.push(scaledFeatures);
         }
         
-        console.log(`📊 Prepared sequence: ${sequence.length} timesteps × ${sequence[0].length} features`);
+        console.log(`Prepared sequence: ${sequence.length} timesteps × ${sequence[0].length} features`);
         
         // Debug: Verify moving averages are properly calculated
         console.log(`🔍 Feature verification for last point:`);
@@ -421,7 +421,7 @@ class RealtimePredictor {
             console.log(`   t-${sequence.length-1-i}: [${sequence[i].map(f => f.toFixed(6)).join(', ')}]`);
         }
         
-        // 🎯 SINGLE prediction - exactly like Python model was trained
+        // SINGLE prediction - exactly like Python model was trained
         const inputTensor = tf.tensor3d([sequence], [1, 20, 5]);
         const predictionTensor = this.model.predict(inputTensor);
         const scaledPrediction = predictionTensor.dataSync()[0];
@@ -432,9 +432,9 @@ class RealtimePredictor {
         predictionTensor.dispose();
         
         const currentPrice = marketData[marketData.length - 1].close;
-        console.log(`🎯 DIRECT prediction (${this.predictionSteps} min ahead): $${predictedPrice.toFixed(2)}`);
-        console.log(`📊 Current price: $${currentPrice.toFixed(2)}`);
-        console.log(`📈 Predicted change: ${((predictedPrice - currentPrice) / currentPrice * 100).toFixed(2)}%`);
+        console.log(`DIRECT prediction (${this.predictionSteps} min ahead): $${predictedPrice.toFixed(2)}`);
+        console.log(`Current price: $${currentPrice.toFixed(2)}`);
+        console.log(`Predicted change: ${((predictedPrice - currentPrice) / currentPrice * 100).toFixed(2)}%`);
         
         // Calculate confidence
         const confidence = Math.max(50, Math.min(99, 100 - Math.abs((predictedPrice - currentPrice) / currentPrice) * 100));
@@ -452,24 +452,24 @@ class RealtimePredictor {
         const scaled = [];
         
         console.log(`🔢 FEATURE SCALING DEBUG:`);
-        console.log(`   📊 Raw features: [${features.map(f => f.toFixed(2)).join(', ')}]`);
+                    console.log(`   Raw features: [${features.map(f => f.toFixed(2)).join(', ')}]`);
         
         for (let i = 0; i < features.length; i++) {
             // MinMaxScaler: (value - data_min) / data_range - NO CLAMPING!
             const scaledValue = (features[i] - feature_scaler.data_min_[i]) / feature_scaler.data_range_[i];
             
             if (i === 0) { // Only log for price feature to avoid spam
-                console.log(`   💰 Price feature: ${features[i].toFixed(2)} → scaled: ${scaledValue.toFixed(6)}`);
+                console.log(`   Price feature: ${features[i].toFixed(2)} → scaled: ${scaledValue.toFixed(6)}`);
                 
                 if (scaledValue < 0 || scaledValue > 1) {
-                    console.log(`   📈 Price ${features[i].toFixed(2)} is outside training range [${feature_scaler.data_min_[i].toFixed(2)}, ${(feature_scaler.data_min_[i] + feature_scaler.data_range_[i]).toFixed(2)}] - EXTRAPOLATING`);
+                    console.log(`   Price ${features[i].toFixed(2)} is outside training range [${feature_scaler.data_min_[i].toFixed(2)}, ${(feature_scaler.data_min_[i] + feature_scaler.data_range_[i]).toFixed(2)}] - EXTRAPOLATING`);
                 }
             }
             
             scaled.push(scaledValue);
         }
         
-        console.log(`   ✅ Scaled features: [${scaled.map(f => f.toFixed(6)).join(', ')}]`);
+        console.log(`   Scaled features: [${scaled.map(f => f.toFixed(6)).join(', ')}]`);
         return scaled;
     }
     
@@ -480,17 +480,17 @@ class RealtimePredictor {
         const currentPrice = this.marketData.length > 0 ? this.marketData[this.marketData.length - 1].close : null;
         
         console.log(`🔍 DIRECT LSTM PREDICTION:`);
-        console.log(`   📊 Scaled prediction from model: ${scaledPrice}`);
-        console.log(`   💰 Current market price: $${currentPrice?.toFixed(2)}`);
+        console.log(`   Scaled prediction from model: ${scaledPrice}`);
+        console.log(`   Current market price: $${currentPrice?.toFixed(2)}`);
         console.log(`   📏 Training range: $${price_scaler.data_min_[0].toFixed(2)} - $${price_scaler.data_max_[0].toFixed(2)}`);
         
         // Direct inverse scaling - TRUST THE MODEL!
         const lstmPrediction = scaledPrice * price_scaler.data_range_[0] + price_scaler.data_min_[0];
-        console.log(`   🎯 LSTM PREDICTION: $${lstmPrediction.toFixed(2)}`);
+        console.log(`   LSTM PREDICTION: $${lstmPrediction.toFixed(2)}`);
         
         if (currentPrice) {
             const percentChange = ((lstmPrediction - currentPrice) / currentPrice) * 100;
-            console.log(`   📈 Predicted change: ${percentChange.toFixed(2)}%`);
+            console.log(`   Predicted change: ${percentChange.toFixed(2)}%`);
             
             // Just log the prediction magnitude for awareness, but DON'T clamp it
             if (Math.abs(percentChange) > 2) {
@@ -498,7 +498,7 @@ class RealtimePredictor {
             }
         }
         
-        console.log(`   ✅ DIRECT LSTM OUTPUT: $${lstmPrediction.toFixed(2)}`);
+        console.log(`   DIRECT LSTM OUTPUT: $${lstmPrediction.toFixed(2)}`);
         return lstmPrediction;
     }
     
@@ -575,7 +575,7 @@ class RealtimePredictor {
             const shouldKeep = isRecentlyMade && isFutureTarget;
             
             if (!shouldKeep) {
-                console.log(`🗑️ Removing old prediction: made at ${pred.madeAt.toLocaleTimeString()}, target ${pred.targetTime.toLocaleTimeString()}`);
+                console.log(`Removing old prediction: made at ${pred.madeAt.toLocaleTimeString()}, target ${pred.targetTime.toLocaleTimeString()}`);
             }
             
             return shouldKeep;
@@ -642,7 +642,7 @@ class RealtimePredictor {
                 const accuracy = Math.max(0, 100 - (error / actualPrice * 100));
                 track.accuracy = accuracy;
                 
-                console.log(`🎯 Prediction vs Actual: $${track.predictedPrice.toFixed(2)} vs $${actualPrice.toFixed(2)} (${accuracy.toFixed(1)}% accurate)`);
+                console.log(`Prediction vs Actual: $${track.predictedPrice.toFixed(2)} vs $${actualPrice.toFixed(2)} (${accuracy.toFixed(1)}% accurate)`);
             }
             
             if (track.accuracy !== null) {
@@ -655,7 +655,7 @@ class RealtimePredictor {
         if (accurateCount > 0) {
             this.predictionAccuracy = accuracySum / accurateCount;
             document.getElementById('predictionAccuracy').textContent = `${this.predictionAccuracy.toFixed(1)}%`;
-            console.log(`📊 Overall Prediction Accuracy: ${this.predictionAccuracy.toFixed(1)}%`);
+            console.log(`Overall Prediction Accuracy: ${this.predictionAccuracy.toFixed(1)}%`);
         }
     }
     
@@ -822,7 +822,7 @@ class RealtimePredictor {
                                             `Target: ${data.targetTime}`,
                                             `Made at: ${data.madeAt}`,
                                             `Confidence: ${data.confidence?.toFixed(1)}%`,
-                                            data.isPast ? '✅ Past prediction' : '🎯 Future prediction'
+                                            data.isPast ? 'Past prediction' : 'Future prediction'
                                         ];
                                     }
                                 }
@@ -892,7 +892,7 @@ class RealtimePredictor {
         const chartStartTime = new Date(currentTime.getTime() - (29 * 60000)); // 29 minutes ago (to match 25 candles)
         const chartEndTime = new Date(currentTime.getTime() + (this.predictionSteps * 60000)); // 5 minutes ahead
         
-        console.log(`📊 Chart time range: ${chartStartTime.toLocaleTimeString()} to ${chartEndTime.toLocaleTimeString()}`);
+        console.log(`Chart time range: ${chartStartTime.toLocaleTimeString()} to ${chartEndTime.toLocaleTimeString()}`);
         
         // Process all stored predictions and place them in the correct positions
         this.allPredictions.forEach(pred => {
@@ -908,13 +908,13 @@ class RealtimePredictor {
                 
                 // Only place predictions in the future part of the chart (after historical data)
                 if (chartIndex >= recentData.length) {
-                    console.log(`   ✅ Placing prediction at chart position ${chartIndex} (${labels[chartIndex]})`);
+                    console.log(`   Placing prediction at chart position ${chartIndex} (${labels[chartIndex]})`);
                     predictionData[chartIndex] = pred.predictedPrice;
                 } else {
                     console.log(`   ⏰ Skipping prediction - would appear in historical range (position ${chartIndex})`);
                 }
             } else {
-                console.log(`   ❌ Prediction outside chart range or in the past`);
+                console.log(`   Prediction outside chart range or in the past`);
             }
         });
         
@@ -929,7 +929,7 @@ class RealtimePredictor {
         
         // ONLY add the current prediction at the very end (5 minutes ahead)
         const currentPredictionIndex = recentData.length + this.predictionSteps - 1;
-        console.log(`🎯 Adding ONLY current prediction at position ${currentPredictionIndex} (should be >= ${recentData.length})`);
+        console.log(`Adding ONLY current prediction at position ${currentPredictionIndex} (should be >= ${recentData.length})`);
         
         if (currentPredictionIndex >= recentData.length) {
             allPredictionsData.push({
@@ -940,29 +940,29 @@ class RealtimePredictor {
                 targetTime: labels[currentPredictionIndex],
                 madeAt: currentTime.toLocaleTimeString()
             });
-            console.log(`✅ Added current prediction at position ${currentPredictionIndex}: $${prediction.value.toFixed(2)}`);
+            console.log(`Added current prediction at position ${currentPredictionIndex}: $${prediction.value.toFixed(2)}`);
         } else {
-            console.log(`🚨 ERROR: Current prediction position ${currentPredictionIndex} is not in future zone!`);
+            console.log(`ERROR: Current prediction position ${currentPredictionIndex} is not in future zone!`);
         }
         
         // DO NOT ADD ANY STORED PREDICTIONS FOR NOW - COMPLETELY DISABLE THEM
-        console.log(`🚫 DISABLED: Not adding any stored predictions to eliminate left-side dots`);
+        console.log(`DISABLED: Not adding any stored predictions to eliminate left-side dots`);
         
         // FINAL VERIFICATION: Ensure NO predictions are in historical positions
         const filteredPredictions = allPredictionsData.filter(pred => {
             const isInFutureZone = pred.x >= recentData.length;
             if (!isInFutureZone) {
-                console.log(`🚨 EMERGENCY REMOVAL: prediction at historical position ${pred.x}!`);
+                console.log(`EMERGENCY REMOVAL: prediction at historical position ${pred.x}!`);
             }
             return isInFutureZone;
         });
         
-        console.log(`📊 FINAL RESULT: ${filteredPredictions.length} predictions (ALL should be in future zone)`);
+        console.log(`FINAL RESULT: ${filteredPredictions.length} predictions (ALL should be in future zone)`);
         filteredPredictions.forEach(pred => {
-            console.log(`   ✅ Position ${pred.x}: $${pred.y.toFixed(2)} (${pred.x >= recentData.length ? 'FUTURE' : 'HISTORICAL - ERROR!'})`);
+            console.log(`   Position ${pred.x}: $${pred.y.toFixed(2)} (${pred.x >= recentData.length ? 'FUTURE' : 'HISTORICAL - ERROR!'})`);
         });
         
-        console.log(`📊 Chart Update: Showing ${this.allPredictions.length} stored predictions`);
+        console.log(`Chart Update: Showing ${this.allPredictions.length} stored predictions`);
         console.log(`🔴 Prediction data array:`, predictionData);
         console.log(`🔴 Non-null prediction points:`, predictionData.filter(p => p !== null).length);
         console.log(`🔴 All stored predictions:`, this.allPredictions.map(p => ({
@@ -1003,7 +1003,7 @@ class RealtimePredictor {
         this.chart.data.datasets[4].data = filteredPredictions; // All predictions as scatter points (FILTERED)
         this.chart.data.datasets[5].data = comparisonData.filter(d => d); // Actual vs predicted points
         
-        console.log(`📊 CHART DATA SET: Dataset 4 (pink dots) now has ${this.chart.data.datasets[4].data.length} points`);
+        console.log(`CHART DATA SET: Dataset 4 (pink dots) now has ${this.chart.data.datasets[4].data.length} points`);
         this.chart.data.datasets[4].data.forEach((point, idx) => {
             console.log(`   Pink dot ${idx}: position ${point.x}, price $${point.y.toFixed(2)}`);
         });
@@ -1016,17 +1016,17 @@ class RealtimePredictor {
         if (this.chart.data.datasets[4].data.length > 0) {
             this.chart.data.datasets[4].data.forEach((point, idx) => {
                 const isHistorical = point.x < recentData.length;
-                console.log(`   ${isHistorical ? '🚨 HISTORICAL' : '✅ FUTURE'} dot ${idx}: position ${point.x}, price $${point.y.toFixed(2)}`);
+                console.log(`   ${isHistorical ? 'HISTORICAL' : 'FUTURE'} dot ${idx}: position ${point.x}, price $${point.y.toFixed(2)}`);
             });
         }
         
-        console.log(`📊 Chart updated with ${recentData.length} candles + ${this.predictionSteps} future slots`);
-        console.log(`🎯 Prediction for ${labels[recentData.length + this.predictionSteps - 1]}: $${prediction.value.toFixed(2)}`);
+        console.log(`Chart updated with ${recentData.length} candles + ${this.predictionSteps} future slots`);
+        console.log(`Prediction for ${labels[recentData.length + this.predictionSteps - 1]}: $${prediction.value.toFixed(2)}`);
     }
 }
 
 // Initialize when page loads
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('🎯 Real-Time Predictor starting...');
+    console.log('Real-Time Predictor starting...');
     window.realtimePredictor = new RealtimePredictor();
 });

@@ -36,18 +36,18 @@ class StockPredictor {
     async loadModel() {
         try {
             this.updateModelStatus('loading', 'Loading TensorFlow.js model...');
-            console.log('🔄 Loading model from ../tfjs_model/model/model.json');
+            console.log('Loading model from ../tfjs_model/model/model.json');
             
             // Load the LayersModel (proper TensorFlow.js format)
             this.model = await tf.loadLayersModel('../tfjs_model/model/model.json');
             this.updateModelStatus('ready', 'Model loaded successfully');
             this.isModelLoaded = true;
-            console.log('✅ TensorFlow.js LayersModel loaded successfully');
+            console.log('TensorFlow.js LayersModel loaded successfully');
             console.log('Model input shape:', this.model.inputs[0].shape);
             console.log('Model output shape:', this.model.outputs[0].shape);
             
         } catch (error) {
-            console.error('❌ Error loading LayersModel:', error);
+            console.error('Error loading LayersModel:', error);
             this.updateModelStatus('error', `Failed to load model: ${error.message}`);
             throw error;
         }
@@ -60,8 +60,8 @@ class StockPredictor {
                 throw new Error('Failed to load scaler info');
             }
             this.scalerInfo = await response.json();
-            console.log('✅ Scaler info loaded');
-            console.log('📊 Price scaler (MinMaxScaler) - Range:', this.scalerInfo.price_scaler.data_min_[0], 'to', this.scalerInfo.price_scaler.data_max_[0]);
+            console.log('Scaler info loaded');
+            console.log('Price scaler (MinMaxScaler) - Range:', this.scalerInfo.price_scaler.data_min_[0], 'to', this.scalerInfo.price_scaler.data_max_[0]);
             
         } catch (error) {
             console.error('Error loading scaler info:', error);
@@ -111,10 +111,10 @@ class StockPredictor {
             }
             
             this.sampleData = await response.json();
-            console.log('✅ Sample data loaded:', this.sampleData.length, 'records');
-            console.log('📊 First record price:', this.sampleData[0].close);
-            console.log('📊 Last record price:', this.sampleData[this.sampleData.length - 1].close);
-            console.log('📊 Price range check:', Math.min(...this.sampleData.map(d => d.close)), 'to', Math.max(...this.sampleData.map(d => d.close)));
+            console.log('Sample data loaded:', this.sampleData.length, 'records');
+            console.log('First record price:', this.sampleData[0].close);
+            console.log('Last record price:', this.sampleData[this.sampleData.length - 1].close);
+            console.log('Price range check:', Math.min(...this.sampleData.map(d => d.close)), 'to', Math.max(...this.sampleData.map(d => d.close)));
             
         } catch (error) {
             console.error('Error loading sample data:', error);
@@ -238,9 +238,9 @@ class StockPredictor {
         }
 
         try {
-            console.log('🔮 Generating FRESH predictions with LSTM model using recent data...');
-            console.log(`📊 Using sample data: ${this.sampleData.length} records`);
-            console.log(`💰 Price range: $${Math.min(...this.sampleData.map(d => d.close))} - $${Math.max(...this.sampleData.map(d => d.close))}`);
+            console.log('Generating FRESH predictions with LSTM model using recent data...');
+            console.log(`Using sample data: ${this.sampleData.length} records`);
+            console.log(`Price range: $${Math.min(...this.sampleData.map(d => d.close))} - $${Math.max(...this.sampleData.map(d => d.close))}`);
             
             // Take a subset of sample data for predictions (last 100 points)
             const dataSubset = this.sampleData.slice(-1000);
@@ -287,8 +287,8 @@ class StockPredictor {
             }
             
             this.historicalPredictions = predictions;
-            console.log('✅ Generated', predictions.length, 'FRESH LSTM predictions');
-            console.log(`🎯 Prediction price range: $${Math.min(...predictions.map(p => p.predicted_price))} - $${Math.max(...predictions.map(p => p.predicted_price))}`);
+            console.log('Generated', predictions.length, 'FRESH LSTM predictions');
+            console.log(`Prediction price range: $${Math.min(...predictions.map(p => p.predicted_price))} - $${Math.max(...predictions.map(p => p.predicted_price))}`);
             
             // Update statistics and chart with fresh predictions
             this.updateStatistics();
@@ -322,7 +322,7 @@ class StockPredictor {
         if (maeEl) maeEl.textContent = '$' + mae.toFixed(2);
         if (rmseEl) rmseEl.textContent = '$' + rmse.toFixed(2);
         
-        console.log('📊 Statistics updated:', {
+        console.log('Statistics updated:', {
             total: predictions.length,
             accuracy: avgAccuracy.toFixed(2) + '%',
             mae: '$' + mae.toFixed(2),
@@ -348,7 +348,7 @@ class StockPredictor {
         this.chart.data.datasets[1].data = predictedPrices;
         
         this.chart.update();
-        console.log('✅ Chart updated with', chartData.length, 'data points');
+        console.log('Chart updated with', chartData.length, 'data points');
     }
 }
 
