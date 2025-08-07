@@ -58,11 +58,11 @@
                         <small>Get your FREE API key at <a href="https://twelvedata.com/pricing" target="_blank">twelvedata.com</a> (800 requests/day FREE - 32x more than Alpha Vantage!)</small>
                     </div>
                     <div class="config-item">
-                        <label>NQ Futures Tracking</label>
-                                            <div class="futures-info">
-                        <div class="futures-symbol">QQQ × 41.36 = NQ Scale</div>
-                        <small>QQQ ETF scaled to NQ E-mini futures price range</small>
-                    </div>
+                        <label>NQ Futures Data</label>
+                        <div class="futures-info">
+                            <div class="futures-symbol">Direct NQ E-mini</div>
+                            <small>Real NQ E-mini futures data from Twelve Data</small>
+                        </div>
                     </div>
                     <div class="config-item">
                         <label>Data Interval</label>
@@ -186,7 +186,7 @@
                             <div class="legend">
                                 <div class="legend-item">
                                     <div class="legend-color actual"></div>
-                                    <span>QQQ Scaled Price</span>
+                                    <span>NQ Futures Price</span>
                                 </div>
                                 <div class="legend-item">
                                     <div class="legend-color predicted"></div>
@@ -203,7 +203,7 @@
                         <canvas id="realtimeChart"></canvas>
                     </div>
                                     <div class="chart-footer">
-                    <p>Real-time NQ futures via QQQ scaled • 1-min data • 5-min ahead LSTM predictions • Persistent prediction history</p>
+                    <p>Real-time NQ E-mini futures data • 1-min intervals • 5-min ahead LSTM predictions • Persistent prediction history</p>
                 </div>
                 </div>
 
@@ -252,8 +252,8 @@
                                 <span class="info-value">CME</span>
                             </div>
                             <div class="info-item">
-                                <span class="info-label">Tracking via</span>
-                                <span class="info-value">QQQ Scaled</span>
+                                <span class="info-label">Data Source</span>
+                                <span class="info-value">Direct NQ Futures</span>
                             </div>
                             <div class="info-item">
                                 <span class="info-label">Index</span>
@@ -294,7 +294,7 @@
             <div class="footer-content">
                 <div class="footer-section">
                     <h4>NQ Futures Data</h4>
-                    <p>NASDAQ-100 E-mini futures tracking via QQQ scaled • Alpha Vantage API</p>
+                    <p>Direct NASDAQ-100 E-mini futures data • Twelve Data API</p>
                 </div>
                 <div class="footer-section">
                     <h4>Neural Network</h4>
