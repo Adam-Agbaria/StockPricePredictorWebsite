@@ -48,6 +48,68 @@ class RealtimePredictor {
         this.initialize();
     }
     
+    isMarketOpen() {
+        const now = new Date();
+        const easternTime = new Date(now.toLocaleString("en-US", {timeZone: "America/New_York"}));
+        
+        const day = easternTime.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+        const hours = easternTime.getHours();
+        const minutes = easternTime.getMinutes();
+        const currentMinutes = hours * 60 + minutes;
+        
+        // Market is closed on weekends (Saturday = 6, Sunday = 0)
+        if (day === 0 || day === 6) {
+            return {
+                isOpen: false,
+                isRegularHours: false,
+                isExtendedHours: false,
+                currentTime: easternTime
+            };
+        }
+        
+        // Regular trading hours: 9:30 AM - 4:00 PM ET (Monday-Friday)
+        const marketOpen = 9 * 60 + 30; // 9:30 AM in minutes
+        const marketClose = 16 * 60; // 4:00 PM in minutes
+        
+        // Extended hours: 4:00 AM - 8:00 PM ET
+        const extendedOpen = 4 * 60; // 4:00 AM in minutes
+        const extendedClose = 20 * 60; // 8:00 PM in minutes
+        
+        // Check if we're in extended trading hours
+        const inExtendedHours = currentMinutes >= extendedOpen && currentMinutes < extendedClose;
+        const inRegularHours = currentMinutes >= marketOpen && currentMinutes < marketClose;
+        
+        return {
+            isOpen: inExtendedHours,
+            isRegularHours: inRegularHours,
+            isExtendedHours: inExtendedHours && !inRegularHours,
+            currentTime: easternTime
+        };
+    }
+    
+    updateMarketStatus() {
+        const marketInfo = this.isMarketOpen();
+        const statusElement = document.getElementById('marketStatus');
+        
+        if (!statusElement) return;
+        
+        const statusDot = statusElement.querySelector('.status-dot');
+        const statusText = statusElement.querySelector('span');
+        
+        if (marketInfo.isRegularHours) {
+            statusDot.className = 'status-dot ready';
+            statusText.textContent = 'Open (Regular Hours)';
+        } else if (marketInfo.isExtendedHours) {
+            statusDot.className = 'status-dot loading';
+            statusText.textContent = 'Extended Hours';
+        } else {
+            statusDot.className = 'status-dot error';
+            statusText.textContent = 'Closed';
+        }
+        
+        console.log(`Market Status: ${statusText.textContent} (ET: ${marketInfo.currentTime.toLocaleTimeString()})`);
+    }
+    
     async initialize() {
         console.log('🚀 Initializing Real-Time Predictor...');
         
@@ -55,6 +117,10 @@ class RealtimePredictor {
             await this.loadModel();
             await this.loadScalerInfo();
             this.setupEventListeners();
+            this.updateMarketStatus();
+            
+            // Update market status every minute
+            setInterval(() => this.updateMarketStatus(), 60000);
             this.updateStatus('ready', 'Real-time system ready');
             console.log('Real-time predictor initialized successfully');
         } catch (error) {
