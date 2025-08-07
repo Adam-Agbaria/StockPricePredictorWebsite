@@ -2,7 +2,9 @@
 
 A modern web application that uses TensorFlow.js to run LSTM-based stock price predictions directly in the browser. No backend required!
 
-## 🚀 Features
+Web App Link: https://stock-price-predictor-website.vercel.app/web_app/
+
+## Features
 
 - **Client-side AI**: Runs entirely in the browser using TensorFlow.js
 - **Real-time Predictions**: Instant stock price predictions
@@ -11,7 +13,7 @@ A modern web application that uses TensorFlow.js to run LSTM-based stock price p
 - **Sample Data**: Built-in sample data for testing
 - **Visual Analytics**: Interactive charts showing price history and predictions
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 WebApp-AI-StocksPredict/
@@ -32,7 +34,7 @@ WebApp-AI-StocksPredict/
 └── README.md                     # This file
 ```
 
-## 🛠️ Setup Instructions
+## Setup Instructions
 
 ### Prerequisites
 
@@ -92,7 +94,7 @@ Then open your browser and navigate to:
 - `http://localhost:8000/web_app/` (if using Python server)
 - Or open `web_app/index.html` directly in your browser
 
-## 🎯 How to Use
+## How to Use
 
 1. **Load the Application**: Open the web app in your browser
 2. **Wait for Model**: The app will automatically load the TensorFlow.js model
@@ -101,7 +103,7 @@ Then open your browser and navigate to:
 5. **Make Prediction**: Click "Predict Price" to get the AI prediction
 6. **View Results**: See the predicted price, change, direction, and chart
 
-## 📊 Model Architecture
+## Model Architecture
 
 - **Type**: LSTM Neural Network
 - **Input**: 20 time steps × 5 features
@@ -109,7 +111,7 @@ Then open your browser and navigate to:
 - **Output**: Single price prediction (5 steps ahead)
 - **Normalization**: MinMaxScaler for both features and targets
 
-## 🔧 Technical Details
+## Technical Details
 
 ### Model Conversion Process
 
@@ -130,7 +132,7 @@ Then open your browser and navigate to:
 - **Prediction Time**: ~50-200ms per prediction
 - **Memory Usage**: ~10-50MB (depending on model complexity)
 
-## 🎨 Customization
+## Customization
 
 ### Styling
 - Edit `web_app/styles.css` to customize the appearance
@@ -146,7 +148,7 @@ Then open your browser and navigate to:
 - Update the UI to include new input fields
 - Modify the preprocessing logic accordingly
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
@@ -182,7 +184,7 @@ Open browser developer tools and check the console for detailed error messages a
 - **Export Features**: Save predictions and charts
 - **Mobile App**: Convert to Progressive Web App (PWA)
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch
@@ -190,11 +192,11 @@ Open browser developer tools and check the console for detailed error messages a
 4. Test thoroughly
 5. Submit a pull request
 
-## 📄 License
+## License
 
 This project is open source and available under the MIT License.
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - TensorFlow.js team for the excellent browser ML framework
 - Chart.js for the beautiful charting library

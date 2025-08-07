@@ -1,10 +1,10 @@
 # Real-Time NQ Futures LSTM Prediction Setup
 
-## 🚀 Quick Start Guide
+## Quick Start Guide
 
 Your web application now includes a powerful **Real-Time NQ Futures Prediction** feature that tracks NASDAQ-100 E-mini futures and uses your trained LSTM model to predict the next price step.
 
-## 📋 Requirements
+## Requirements
 
 1. **Twelve Data API Key** (FREE)
    - Visit: https://twelvedata.com/pricing
@@ -12,7 +12,7 @@ Your web application now includes a powerful **Real-Time NQ Futures Prediction**
    - Get your API key (800 requests/day on free plan)
    - **32x more requests than Alpha Vantage!**
 
-## 🛠️ How to Use
+## How to Use
 
 ### Step 1: Launch the Application
 ```bash
@@ -36,7 +36,7 @@ Navigate to: `http://localhost:8000/web_app/`
 - See real-time charts updating automatically
 - Monitor NASDAQ-100 futures information and model confidence
 
-## 📊 Features
+## Features
 
 ### Real-Time NQ Futures Dashboard
 - **Current QQQ Price**: Live QQQ ETF price scaled to NQ futures range
@@ -73,7 +73,7 @@ Navigate to: `http://localhost:8000/web_app/`
 - JavaScript enabled
 - No additional plugins required
 
-## 💡 Usage Tips
+## Usage Tips
 
 1. **Generous Limits**: Twelve Data API offers 800 requests/day (32x more than Alpha Vantage!)
 2. **NQ Futures Tracking**: QQQ ETF closely tracks NASDAQ-100 index movements
@@ -82,18 +82,18 @@ Navigate to: `http://localhost:8000/web_app/`
 5. **Model Accuracy**: Performance optimized for NASDAQ-100 patterns
 6. **Free Tier**: Get started immediately with the generous free plan
 
-## 🚨 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
-#### ⚠️ "Connection failed" Error
+#### "Connection failed" Error
 **Possible causes**:
 - **API Key**: Verify your Twelve Data API key is correct
 - **Network issues**: Check your internet connection
 - **Markets closed**: Try again during market hours
 - **Rate limit**: You may have reached the 800 requests/day limit
 
-#### ⚠️ "No market data available" Error
+#### "No market data available" Error
 - **API Key**: Ensure your Twelve Data API key is valid
 - **Markets closed**: Limited data may be available outside market hours
 - **Symbol issues**: QQQ symbol should always work during trading hours
@@ -104,14 +104,14 @@ Navigate to: `http://localhost:8000/web_app/`
 - **Model loading failed**: Check browser console for details
 - **Prediction errors**: Verify scaler info and model compatibility
 
-## 📈 Performance Expectations
+## Performance Expectations
 
 - **Prediction Accuracy**: Typically 85-95% directional accuracy
 - **Response Time**: Usually under 500ms for API calls
 - **Update Frequency**: Real-time updates every 1-5 minutes
 - **Model Confidence**: Ranges from 50-99% based on market volatility
 
-## 🔮 Next Steps
+## Next Steps
 
 1. **Get API Key**: Sign up at twelvedata.com for FREE
 2. **Start Tracking**: Enter your API key and click "Connect & Start" 
@@ -121,7 +121,7 @@ Navigate to: `http://localhost:8000/web_app/`
 
 ---
 
-**Your LSTM Stock Predictor is now a professional real-time NQ futures trading platform!** 🎉
+**Your LSTM Stock Predictor is now a professional real-time NQ futures trading platform!** 
 
 **NQ Futures Details:**
 - **Contract**: E-mini NASDAQ-100 (NQ)
