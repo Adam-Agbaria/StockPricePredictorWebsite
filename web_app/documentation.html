@@ -355,23 +355,22 @@ y = prices[20:]     # Target prices
                 <h3>Data Sources</h3>
                 <ul>
                     <li><strong>Training Data:</strong> Historical NQ futures data (2007-2025 prices)</li>
-                    <li><strong>Real-Time Data:</strong> Direct NQ E-mini futures data</li>
+                    <li><strong>Real-Time Data:</strong> QQQ ETF scaled to NQ futures (QQQ × 41.36)</li>
                     <li><strong>API Provider:</strong> Twelve Data (free tier: 800 requests/day)</li>
                     <li><strong>Data Frequency:</strong> 1-minute intervals for real-time analysis</li>
                 </ul>
 
-                <h3>Direct NQ Futures Data</h3>
-                <p>The system now uses direct NQ E-mini futures data from Twelve Data API:</p>
+                <h3>NQ Futures Tracking</h3>
+                <p>Since direct NQ futures data requires expensive subscriptions, we use QQQ ETF as a proxy:</p>
                 <div class="code-block">
-Symbol: NQ
-Contract: E-mini NASDAQ-100 Futures
-Exchange: CME
+NQ_price ≈ QQQ_price × 41.36
                 </div>
-                <p>This provides real, unscaled futures prices directly from the market without any proxy calculations.</p>
+                <p>QQQ tracks the NASDAQ-100 index, which the NQ E-mini futures contract is based on, providing an excellent correlation for prediction purposes.</p>
 
                 <h3>Data Pipeline</h3>
                 <ol>
-                    <li><strong>Fetch:</strong> Direct NQ futures data from Twelve Data API</li>
+                    <li><strong>Fetch:</strong> Real-time QQQ data from Twelve Data API</li>
+                    <li><strong>Scale:</strong> Apply QQQ to NQ scaling factor</li>
                     <li><strong>Feature Engineering:</strong> Calculate technical indicators</li>
                     <li><strong>Normalize:</strong> Apply MinMaxScaler transformation</li>
                     <li><strong>Sequence:</strong> Create 20-step input sequences</li>
@@ -380,7 +379,7 @@ Exchange: CME
                 </ol>
 
                 <div class="warning-box">
-                    <strong>Rate Limiting:</strong> The free Twelve Data API allows 800 requests per day. The system fetches direct NQ futures data at 1-minute intervals to maximize usage efficiency.
+                    <strong>Rate Limiting:</strong> The free Twelve Data API allows 800 requests per day. The system is optimized for 1-minute intervals to maximize usage efficiency.
                 </div>
             </div>
 
@@ -408,7 +407,7 @@ Exchange: CME
                 <div class="feature-grid">
                     <div class="feature-item">
                         <h4>Live Price Tracking</h4>
-                        <p>Current NQ E-mini futures price with real-time updates every minute.</p>
+                        <p>Current QQQ price scaled to NQ futures with real-time updates every minute.</p>
                     </div>
                     
                     <div class="feature-item">

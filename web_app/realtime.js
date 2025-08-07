@@ -8,9 +8,9 @@ class RealtimePredictor {
         this.isModelLoaded = false;
         this.isConnected = false;
         this.apiKey = null;
-        this.symbol = 'NQ'; // Direct NQ E-mini futures
-        this.scalingFactor = 1.0; // No scaling needed - direct futures data
-        this.useScaling = false; // Using direct NQ futures data
+        this.symbol = 'QQQ'; // QQQ ETF for NASDAQ-100 tracking
+        this.scalingFactor = 41.36; // Scale factor: NQ futures/QQQ ≈ 22750/550
+        this.useScaling = true; // Scale QQQ to NQ futures range
         this.interval = '1min'; // Yahoo Finance format
         this.predictionSteps = 5; // Predict 5 minutes ahead
         
@@ -109,7 +109,7 @@ class RealtimePredictor {
         
         // Get configuration
         this.apiKey = document.getElementById('apiKey').value.trim();
-        this.symbol = 'NQ'; // Direct NQ E-mini futures data
+        this.symbol = 'QQQ'; // Using QQQ with scaling for NQ futures tracking
         this.interval = '1min'; // Fixed to 1-minute intervals only
         
         if (!this.apiKey) {
@@ -240,7 +240,7 @@ class RealtimePredictor {
         // Using Twelve Data API - 800 requests/day FREE! 🎉
         const url = `https://api.twelvedata.com/time_series?symbol=${this.symbol}&interval=${this.interval}&outputsize=100&apikey=${this.apiKey}`;
         
-        console.log(`Fetching direct NQ futures data (${this.interval} interval)...`);
+        console.log(`Fetching NQ futures data via ${this.symbol} (${this.interval} interval)...`);
         console.log(`📡 Twelve Data API URL: ${url}`);
         console.log('Using Twelve Data API - 800 requests/day FREE! (32x more than Alpha Vantage)');
         
@@ -286,8 +286,15 @@ class RealtimePredictor {
                 return null;
             }
             
-            // Direct NQ futures data - no scaling needed
-            // All OHLCV values are already in the correct NQ futures format
+            // Apply scaling factor for NQ futures
+            if (this.useScaling) {
+                open *= this.scalingFactor;
+                high *= this.scalingFactor;
+                low *= this.scalingFactor;
+                close *= this.scalingFactor;
+                // Scale volume down to match NQ futures volume range (QQQ volume is much higher)
+                volume = Math.round(volume / 1000); // Rough approximation to get into NQ volume range
+            }
             
             // DEBUG: Let's see what we're getting from the API
             console.log(`Raw datetime from API: "${item.datetime}"`);
@@ -329,7 +336,7 @@ class RealtimePredictor {
             const currentTime = new Date();
             console.log(`🕐 Latest data timestamp: ${latest.timestamp.toLocaleString()}`);
             console.log(`🕐 Current local time: ${currentTime.toLocaleString()}`);
-            console.log(`Current NQ futures price: $${latest.close.toFixed(2)} (direct data)`);
+            console.log(`Current price: $${latest.close.toFixed(2)} (scaled from QQQ with ${this.scalingFactor}x factor)`);
             
             // Check if price is out of training range
             if (latest.close > 22317.75) {
