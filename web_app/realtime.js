@@ -7,11 +7,17 @@ class RealtimePredictor {
         this.scalerInfo = null;
         this.isModelLoaded = false;
         this.isConnected = false;
-        this.apiKey = null;
-        this.symbol = 'QQQ'; // QQQ ETF for NASDAQ-100 tracking
+        
+        // Data source configuration
+        this.dataSource = 'twelvedata'; // 'twelvedata' or 'alphavantage'
+        this.apiKey = null; // Twelve Data API key
+        this.alphaApiKey = null; // Alpha Vantage API key
+        
+        // Symbol and scaling configuration
+        this.symbol = 'QQQ'; // Default: QQQ ETF for NASDAQ-100 tracking
         this.scalingFactor = 41.36; // Scale factor: NQ futures/QQQ ≈ 22750/550
         this.useScaling = true; // Scale QQQ to NQ futures range
-        this.interval = '1min'; // Yahoo Finance format
+        this.interval = '1min'; // Default interval
         this.predictionSteps = 5; // Predict 5 minutes ahead
         
         // Data storage
@@ -88,12 +94,77 @@ class RealtimePredictor {
         document.getElementById('connectBtn').addEventListener('click', () => this.startRealTimeConnection());
         document.getElementById('stopBtn').addEventListener('click', () => this.stopRealTimeConnection());
         
-        // API key input with enter key support
+        // Data source selector
+        document.getElementById('dataSource').addEventListener('change', (e) => {
+            this.handleDataSourceChange(e.target.value);
+        });
+        
+        // API key inputs with enter key support
         document.getElementById('apiKey').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 this.startRealTimeConnection();
             }
         });
+        
+        document.getElementById('alphaApiKey').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                this.startRealTimeConnection();
+            }
+        });
+    }
+    
+    handleDataSourceChange(dataSource) {
+        this.dataSource = dataSource;
+        console.log(`Data source changed to: ${dataSource}`);
+        
+        // Show/hide appropriate API key inputs
+        const twelveDataConfig = document.getElementById('twelveDataConfig');
+        const alphaVantageConfig = document.getElementById('alphaVantageConfig');
+        const futuresSymbol = document.getElementById('futuresSymbol');
+        const futuresDescription = document.getElementById('futuresDescription');
+        
+        if (dataSource === 'alphavantage') {
+            twelveDataConfig.style.display = 'none';
+            alphaVantageConfig.style.display = 'block';
+            
+            // Update configuration for Alpha Vantage
+            this.symbol = 'QQQ'; // Alpha Vantage also uses QQQ for NASDAQ-100
+            this.useScaling = true;
+            this.scalingFactor = 41.36;
+            
+            // Update UI text
+            futuresSymbol.textContent = 'Alpha Vantage QQQ × 41.36';
+            futuresDescription.textContent = 'Alpha Vantage QQQ data scaled to NQ E-mini futures';
+            
+            // Update chart legend and footer
+            const chartLegend = document.getElementById('chartLegendPrice');
+            const chartFooter = document.getElementById('chartFooterText');
+            if (chartLegend) chartLegend.textContent = 'Alpha Vantage QQQ Scaled';
+            if (chartFooter) chartFooter.textContent = 'Real-time NQ futures via Alpha Vantage QQQ • 1-min data • 5-min ahead LSTM predictions • Persistent history';
+        } else {
+            twelveDataConfig.style.display = 'block';
+            alphaVantageConfig.style.display = 'none';
+            
+            // Update configuration for Twelve Data
+            this.symbol = 'QQQ';
+            this.useScaling = true;
+            this.scalingFactor = 41.36;
+            
+            // Update UI text
+            futuresSymbol.textContent = 'QQQ × 41.36 = NQ Scale';
+            futuresDescription.textContent = 'QQQ ETF scaled to NQ E-mini futures price range';
+            
+            // Update chart legend and footer
+            const chartLegend = document.getElementById('chartLegendPrice');
+            const chartFooter = document.getElementById('chartFooterText');
+            if (chartLegend) chartLegend.textContent = 'QQQ Scaled Price';
+            if (chartFooter) chartFooter.textContent = 'Real-time NQ futures via QQQ scaled • 1-min data • 5-min ahead LSTM predictions • Persistent prediction history';
+        }
+        
+        // Stop current connection if running
+        if (this.isConnected) {
+            this.stopRealTimeConnection();
+        }
     }
     
     updateStatus(type, message) {
@@ -105,24 +176,33 @@ class RealtimePredictor {
     }
     
     async startRealTimeConnection() {
-        console.log('Starting Twelve Data API connection...');
+        console.log(`Starting ${this.dataSource} API connection...`);
         
-        // Get configuration
-        this.apiKey = document.getElementById('apiKey').value.trim();
-        this.symbol = 'QQQ'; // Using QQQ with scaling for NQ futures tracking
-        this.interval = '1min'; // Fixed to 1-minute intervals only
-        
-        if (!this.apiKey) {
-            alert('Please enter your Twelve Data API key');
-            return;
+        // Get configuration based on data source
+        if (this.dataSource === 'alphavantage') {
+            this.alphaApiKey = document.getElementById('alphaApiKey').value.trim();
+            if (!this.alphaApiKey) {
+                alert('Please enter your Alpha Vantage API key');
+                return;
+            }
+        } else {
+            this.apiKey = document.getElementById('apiKey').value.trim();
+            if (!this.apiKey) {
+                alert('Please enter your Twelve Data API key');
+                return;
+            }
         }
+        
+        this.symbol = 'QQQ'; // Both APIs use QQQ for NASDAQ-100 tracking
+        this.interval = '1min'; // Fixed to 1-minute intervals only
         
         if (!this.isModelLoaded) {
             alert('LSTM model is not loaded yet');
             return;
         }
         
-        this.updateStatus('loading', 'Connecting to Twelve Data API...');
+        const apiName = this.dataSource === 'alphavantage' ? 'Alpha Vantage' : 'Twelve Data';
+        this.updateStatus('loading', `Connecting to ${apiName} API...`);
         
         try {
             // Fetch market data 
@@ -136,26 +216,31 @@ class RealtimePredictor {
             document.getElementById('connectBtn').disabled = true;
             document.getElementById('stopBtn').disabled = false;
             
-                    const intervalText = `1min data, ${this.predictionSteps}min predictions`;
-                
-            const statusMsg = `Connected to NQ Futures via ${this.symbol} (${intervalText}) - 800 req/day FREE!`;
+            const intervalText = `1min data, ${this.predictionSteps}min predictions`;
+            const apiName = this.dataSource === 'alphavantage' ? 'Alpha Vantage' : 'Twelve Data';
+            const dailyLimit = this.dataSource === 'alphavantage' ? '25' : '800';
+            
+            const statusMsg = `Connected to NQ Futures via ${this.symbol} (${intervalText}) - ${dailyLimit} req/day FREE!`;
             this.updateStatus('ready', statusMsg);
-            console.log(`Twelve Data connection established: ${intervalText}`);
+            console.log(`${apiName} connection established: ${intervalText}`);
             
         } catch (error) {
             console.error('Error starting connection:', error);
             this.updateStatus('error', 'Connection failed');
             
-            // Provide specific error messages for Twelve Data
+            // Provide specific error messages for both APIs
+            const apiName = this.dataSource === 'alphavantage' ? 'Alpha Vantage' : 'Twelve Data';
+            const dailyLimit = this.dataSource === 'alphavantage' ? '25' : '800';
+            
             let errorMessage = 'Failed to connect to market data.';
             if (error.message.includes('rate limit exceeded')) {
-                errorMessage = 'API rate limit exceeded (800/day). Please wait until tomorrow or upgrade to premium.';
+                errorMessage = `${apiName} API rate limit exceeded (${dailyLimit}/day). Please wait until tomorrow or upgrade to premium.`;
             } else if (error.message.includes('fetch')) {
                 errorMessage = 'Network error. Check your internet connection.';
             } else if (error.message.includes('Markets might be closed')) {
                 errorMessage = 'No market data available. Markets might be closed or symbol invalid.';
             } else if (error.message.includes('API Error')) {
-                errorMessage = `Twelve Data API Error: ${error.message}. Check your API key.`;
+                errorMessage = `${apiName} API Error: ${error.message}. Check your API key.`;
             } else {
                 errorMessage = `Connection failed: ${error.message}`;
             }
@@ -237,6 +322,14 @@ class RealtimePredictor {
     }
     
     async fetchMarketData() {
+        if (this.dataSource === 'alphavantage') {
+            return await this.fetchAlphaVantageData();
+        } else {
+            return await this.fetchTwelveData();
+        }
+    }
+    
+    async fetchTwelveData() {
         // Using Twelve Data API - 800 requests/day FREE! 🎉
         const url = `https://api.twelvedata.com/time_series?symbol=${this.symbol}&interval=${this.interval}&outputsize=100&apikey=${this.apiKey}`;
         
@@ -347,6 +440,103 @@ class RealtimePredictor {
         if (this.useScaling) {
             const latestPrice = dataArray[dataArray.length - 1];
             console.log(`🔢 Using ${this.symbol} with ${this.scalingFactor.toFixed(2)}x scaling. Latest price: ${latestPrice.close.toFixed(2)}`);
+        }
+        
+        return dataArray;
+    }
+    
+    async fetchAlphaVantageData() {
+        // Using Alpha Vantage API - 25 requests/day FREE
+        const url = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=${this.symbol}&interval=1min&outputsize=compact&apikey=${this.alphaApiKey}`;
+        
+        console.log(`Fetching NQ futures data via ${this.symbol} from Alpha Vantage (${this.interval} interval)...`);
+        console.log(`📡 Alpha Vantage API URL: ${url}`);
+        console.log('Using Alpha Vantage API - 25 requests/day FREE');
+        
+        const response = await fetch(url);
+        console.log(`Response status: ${response.status} ${response.statusText}`);
+        
+        const data = await response.json();
+        console.log(`📋 Alpha Vantage Response:`, data);
+        
+        // Check for Alpha Vantage API errors
+        if (data['Error Message']) {
+            console.error(`Alpha Vantage Error:`, data['Error Message']);
+            throw new Error(`Alpha Vantage API Error: ${data['Error Message']}`);
+        }
+        
+        if (data['Note']) {
+            console.error(`Alpha Vantage Rate Limit:`, data['Note']);
+            throw new Error('Alpha Vantage API rate limit exceeded. You have used your 25 daily requests. Please wait until tomorrow.');
+        }
+        
+        const timeSeries = data['Time Series (1min)'];
+        if (!timeSeries) {
+            console.error('No time series data found. Full API response:', data);
+            throw new Error('No market data available from Alpha Vantage. Markets might be closed or symbol invalid.');
+        }
+        
+        // Convert Alpha Vantage format to our format
+        const dataArray = [];
+        for (const [datetime, values] of Object.entries(timeSeries)) {
+            let open = parseFloat(values['1. open']);
+            let high = parseFloat(values['2. high']);
+            let low = parseFloat(values['3. low']);
+            let close = parseFloat(values['4. close']);
+            let volume = parseInt(values['5. volume']) || 0;
+            
+            // Skip null/undefined values
+            if (!open || !high || !low || !close) {
+                continue;
+            }
+            
+            // Apply scaling factor for NQ futures
+            if (this.useScaling) {
+                open *= this.scalingFactor;
+                high *= this.scalingFactor;
+                low *= this.scalingFactor;
+                close *= this.scalingFactor;
+                // Scale volume down to match NQ futures volume range (QQQ volume is much higher)
+                volume = Math.round(volume / 1000); // Rough approximation to get into NQ volume range
+            }
+            
+            // Create timestamp
+            let timestamp = new Date(datetime);
+            
+            dataArray.push({
+                timestamp: timestamp,
+                open: open,
+                high: high,
+                low: low,
+                close: close,
+                volume: volume
+            });
+        }
+        
+        // Sort by timestamp (Alpha Vantage returns data in reverse chronological order)
+        dataArray.sort((a, b) => a.timestamp - b.timestamp);
+        
+        // Store latest data
+        this.marketData = dataArray;
+        
+        console.log(`Received ${dataArray.length} data points from Alpha Vantage`);
+        
+        if (dataArray.length > 0) {
+            const latest = dataArray[dataArray.length - 1];
+            const currentTime = new Date();
+            console.log(`🕐 Latest data timestamp: ${latest.timestamp.toLocaleString()}`);
+            console.log(`🕐 Current local time: ${currentTime.toLocaleString()}`);
+            console.log(`Current price: $${latest.close.toFixed(2)} (scaled from QQQ with ${this.scalingFactor}x factor)`);
+            
+            // Check if price is out of training range
+            if (latest.close > 22317.75) {
+                console.warn(`🚨 Price $${latest.close.toFixed(2)} is above training max $22,317.75 - using dynamic scaling`);
+            }
+        }
+        
+        if (this.useScaling) {
+            const latestPrice = dataArray[dataArray.length - 1];
+            console.log(`🔢 Using Alpha Vantage ${this.symbol} with ${this.scalingFactor.toFixed(2)}x scaling. Latest price: ${latestPrice.close.toFixed(2)}`);
         }
         
         return dataArray;

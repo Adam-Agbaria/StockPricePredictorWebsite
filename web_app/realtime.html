@@ -52,18 +52,32 @@
             <div class="config-section">
                 <h2>NQ Futures Configuration</h2>
                 <div class="config-grid">
-                    <div class="config-item">
+                    <div class="config-item" id="twelveDataConfig">
                         <label for="apiKey">Twelve Data API Key</label>
                         <input type="password" id="apiKey" placeholder="Enter your FREE API key from twelvedata.com">
                         <small>Get your FREE API key at <a href="https://twelvedata.com/pricing" target="_blank">twelvedata.com</a> (800 requests/day FREE - 32x more than Alpha Vantage!)</small>
                     </div>
+
+                    <div class="config-item" id="alphaVantageConfig" style="display: none;">
+                        <label for="alphaApiKey">Alpha Vantage API Key</label>
+                        <input type="password" id="alphaApiKey" placeholder="Enter your Alpha Vantage API key">
+                        <small>Get your free API key at <a href="https://www.alphavantage.co" target="_blank">alphavantage.co</a> (25 requests/day FREE)</small>
+                    </div>
                     <div class="config-item">
                         <label>NQ Futures Tracking</label>
-                        <div class="futures-info">
-                            <div class="futures-symbol">QQQ × 41.36 = NQ Scale</div>
-                            <small>QQQ ETF scaled to NQ E-mini futures price range</small>
+                        <div class="futures-info" id="futuresInfo">
+                            <div class="futures-symbol" id="futuresSymbol">QQQ × 41.36 = NQ Scale</div>
+                            <small id="futuresDescription">QQQ ETF scaled to NQ E-mini futures price range</small>
                         </div>
                     </div>
+                    <div class="config-item">
+                        <label for="dataSource">Data Source</label>
+                        <select id="dataSource" class="config-select">
+                            <option value="twelvedata">Twelve Data (QQQ Scaled)</option>
+                            <option value="alphavantage">Alpha Vantage (Direct)</option>
+                        </select>
+                    </div>
+
                     <div class="config-item">
                         <label>Data Interval</label>
                         <div class="futures-info">
@@ -186,7 +200,7 @@
                             <div class="legend">
                                 <div class="legend-item">
                                     <div class="legend-color actual"></div>
-                                    <span>QQQ Scaled Price</span>
+                                    <span id="chartLegendPrice">QQQ Scaled Price</span>
                                 </div>
                                 <div class="legend-item">
                                     <div class="legend-color predicted"></div>
@@ -203,7 +217,7 @@
                         <canvas id="realtimeChart"></canvas>
                     </div>
                                     <div class="chart-footer">
-                    <p>Real-time NQ futures via QQQ scaled • 1-min data • 5-min ahead LSTM predictions • Persistent prediction history</p>
+                    <p id="chartFooterText">Real-time NQ futures via QQQ scaled • 1-min data • 5-min ahead LSTM predictions • Persistent prediction history</p>
                 </div>
                 </div>
 
@@ -310,4 +324,5 @@
 
     <script src="realtime.js"></script>
 </body>
+</html>
 </html>
