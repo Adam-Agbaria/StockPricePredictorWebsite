@@ -8,6 +8,69 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0/dist/tf.min.js"></script>
+    <style>
+        .market-closed-message {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 20px 0;
+            text-align: center;
+            color: white;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        
+        .closed-message-content {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .closed-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+        
+        .market-closed-message h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: white;
+        }
+        
+        .market-closed-message p {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+        
+        .market-hours {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            backdrop-filter: blur(10px);
+        }
+        
+        .hours-item {
+            margin: 10px 0;
+            font-size: 1rem;
+        }
+        
+        .hours-item strong {
+            color: #ffd700;
+        }
+        
+        .next-open {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 1.1rem;
+            backdrop-filter: blur(5px);
+        }
+        
+        .next-open strong {
+            color: #ffd700;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -74,7 +137,7 @@
                         <label for="dataSource">Data Source</label>
                         <select id="dataSource" class="config-select">
                             <option value="twelvedata">Twelve Data (QQQ Scaled)</option>
-                            <option value="alphavantage">Alpha Vantage (Direct)</option>
+                            <option value="alphavantage">Alpha Vantage (Scaled)</option>
                         </select>
                     </div>
 

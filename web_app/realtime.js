@@ -96,6 +96,7 @@ class RealtimePredictor {
         const statusDot = statusElement.querySelector('.status-dot');
         const statusText = statusElement.querySelector('span');
         
+        // Update status display
         if (marketInfo.isRegularHours) {
             statusDot.className = 'status-dot ready';
             statusText.textContent = 'Open (Regular Hours)';
@@ -107,7 +108,129 @@ class RealtimePredictor {
             statusText.textContent = 'Closed';
         }
         
+        // Show/hide chart section based on market status
+        this.toggleChartVisibility(marketInfo.isOpen);
+        
         console.log(`Market Status: ${statusText.textContent} (ET: ${marketInfo.currentTime.toLocaleTimeString()})`);
+    }
+    
+    toggleChartVisibility(isMarketOpen) {
+        const chartSection = document.querySelector('.chart-section');
+        const dashboardSection = document.querySelector('.dashboard-section');
+        let marketClosedMessage = document.getElementById('marketClosedMessage');
+        
+        if (isMarketOpen) {
+            // Market is open - show chart
+            if (chartSection) chartSection.style.display = 'block';
+            if (dashboardSection) dashboardSection.style.display = 'block';
+            if (marketClosedMessage) marketClosedMessage.style.display = 'none';
+        } else {
+            // Market is closed - hide chart and show message
+            if (chartSection) chartSection.style.display = 'none';
+            if (dashboardSection) dashboardSection.style.display = 'none';
+            
+            // Create or show market closed message
+            if (!marketClosedMessage) {
+                marketClosedMessage = this.createMarketClosedMessage();
+            }
+            if (marketClosedMessage) marketClosedMessage.style.display = 'block';
+        }
+    }
+    
+    createMarketClosedMessage() {
+        const mainContent = document.querySelector('.main-content');
+        if (!mainContent) return null;
+        
+        const messageDiv = document.createElement('div');
+        messageDiv.id = 'marketClosedMessage';
+        messageDiv.className = 'market-closed-message';
+        messageDiv.innerHTML = `
+            <div class="closed-message-content">
+                <div class="closed-icon">📈</div>
+                <h2>Market is Currently Closed</h2>
+                <p>Real-time trading and predictions are only available during market hours:</p>
+                <div class="market-hours">
+                    <div class="hours-item">
+                        <strong>Regular Hours:</strong> 9:30 AM - 4:00 PM ET
+                    </div>
+                    <div class="hours-item">
+                        <strong>Extended Hours:</strong> 4:00 AM - 8:00 PM ET
+                    </div>
+                    <div class="hours-item">
+                        <strong>Days:</strong> Monday - Friday
+                    </div>
+                </div>
+                <p>The chart and live predictions will automatically appear when markets reopen.</p>
+                <div class="next-open" id="nextOpenTime"></div>
+            </div>
+        `;
+        
+        // Insert after the config section
+        const configSection = document.querySelector('.config-section');
+        if (configSection) {
+            configSection.insertAdjacentElement('afterend', messageDiv);
+        } else {
+            mainContent.appendChild(messageDiv);
+        }
+        
+        // Calculate and show next market open time
+        this.updateNextOpenTime();
+        
+        return messageDiv;
+    }
+    
+    updateNextOpenTime() {
+        const nextOpenElement = document.getElementById('nextOpenTime');
+        if (!nextOpenElement) return;
+        
+        const now = new Date();
+        const easternTime = new Date(now.toLocaleString("en-US", {timeZone: "America/New_York"}));
+        
+        let nextOpen = new Date(easternTime);
+        const day = easternTime.getDay();
+        const hours = easternTime.getHours();
+        const minutes = easternTime.getMinutes();
+        const currentMinutes = hours * 60 + minutes;
+        
+        // If it's Friday after 8 PM or weekend, next open is Monday 4 AM
+        if ((day === 5 && currentMinutes >= 20 * 60) || day === 6 || day === 0) {
+            // Calculate next Monday
+            const daysUntilMonday = day === 0 ? 1 : (8 - day);
+            nextOpen.setDate(nextOpen.getDate() + daysUntilMonday);
+            nextOpen.setHours(4, 0, 0, 0);
+        }
+        // If it's a weekday but after 8 PM, next open is tomorrow 4 AM
+        else if (currentMinutes >= 20 * 60) {
+            nextOpen.setDate(nextOpen.getDate() + 1);
+            nextOpen.setHours(4, 0, 0, 0);
+        }
+        // If it's before 4 AM on a weekday, next open is today 4 AM
+        else if (currentMinutes < 4 * 60) {
+            nextOpen.setHours(4, 0, 0, 0);
+        }
+        // If it's between 4 PM and 8 PM, already in extended hours
+        else {
+            nextOpen.setHours(4, 0, 0, 0);
+            nextOpen.setDate(nextOpen.getDate() + 1);
+        }
+        
+        const timeUntilOpen = nextOpen.getTime() - easternTime.getTime();
+        const hoursUntilOpen = Math.floor(timeUntilOpen / (1000 * 60 * 60));
+        const minutesUntilOpen = Math.floor((timeUntilOpen % (1000 * 60 * 60)) / (1000 * 60));
+        
+        if (hoursUntilOpen > 0) {
+            nextOpenElement.innerHTML = `<strong>Next market open:</strong> ${nextOpen.toLocaleString('en-US', {
+                weekday: 'long',
+                month: 'short',
+                day: 'numeric',
+                hour: 'numeric',
+                minute: '2-digit',
+                timeZoneName: 'short',
+                timeZone: 'America/New_York'
+            })} (in ${hoursUntilOpen}h ${minutesUntilOpen}m)`;
+        } else {
+            nextOpenElement.innerHTML = `<strong>Market opens in:</strong> ${minutesUntilOpen} minutes`;
+        }
     }
     
     async initialize() {
@@ -120,7 +243,10 @@ class RealtimePredictor {
             this.updateMarketStatus();
             
             // Update market status every minute
-            setInterval(() => this.updateMarketStatus(), 60000);
+            setInterval(() => {
+                this.updateMarketStatus();
+                this.updateNextOpenTime(); // Also update countdown
+            }, 60000);
             this.updateStatus('ready', 'Real-time system ready');
             console.log('Real-time predictor initialized successfully');
         } catch (error) {
@@ -199,14 +325,14 @@ class RealtimePredictor {
             this.scalingFactor = 41.36;
             
             // Update UI text
-            futuresSymbol.textContent = 'Alpha Vantage QQQ × 41.36';
-            futuresDescription.textContent = 'Alpha Vantage QQQ data scaled to NQ E-mini futures';
+            futuresSymbol.textContent = 'Alpha Vantage × 41.36 Scale';
+            futuresDescription.textContent = 'Alpha Vantage data scaled to NQ E-mini futures price range';
             
             // Update chart legend and footer
             const chartLegend = document.getElementById('chartLegendPrice');
             const chartFooter = document.getElementById('chartFooterText');
-            if (chartLegend) chartLegend.textContent = 'Alpha Vantage QQQ Scaled';
-            if (chartFooter) chartFooter.textContent = 'Real-time NQ futures via Alpha Vantage QQQ • 1-min data • 5-min ahead LSTM predictions • Persistent history';
+            if (chartLegend) chartLegend.textContent = 'Alpha Vantage Scaled Price';
+            if (chartFooter) chartFooter.textContent = 'Real-time NQ futures via Alpha Vantage • 1-min data • 5-min ahead LSTM predictions • Persistent history';
         } else {
             twelveDataConfig.style.display = 'block';
             alphaVantageConfig.style.display = 'none';
@@ -243,6 +369,13 @@ class RealtimePredictor {
     
     async startRealTimeConnection() {
         console.log(`Starting ${this.dataSource} API connection...`);
+        
+        // Check if market is open before starting connection
+        const marketInfo = this.isMarketOpen();
+        if (!marketInfo.isOpen) {
+            alert('Cannot start real-time connection - market is currently closed. Please wait for market hours.');
+            return;
+        }
         
         // Get configuration based on data source
         if (this.dataSource === 'alphavantage') {
